@@ -933,9 +933,11 @@ function saveCalculation() {
     const taxDZD       = customsBase * (taxPct / 100);
     const totalDZD     = carDZD + shipDZD + taxDZD + portFees;
 
+    const now = Date.now();
     const entry = {
-        id: Date.now(),
+        id: now,
         carName: carName,
+        savedAt: now,  // Timestamp for 24-hour expiration check
         timestamp: new Date().toLocaleString(currentLang === 'ar' ? 'ar-DZ' : currentLang === 'es' ? 'es-DZ' : currentLang === 'fr' ? 'fr-DZ' : 'en-DZ'),
         totalDZD: totalDZD,
         centimes: totalDZD,
@@ -949,9 +951,12 @@ function saveCalculation() {
     };
 
     calculationHistory.unshift(entry); // Add to beginning (newest first)
-    if (calculationHistory.length > 5) {
-        calculationHistory.pop(); // Remove oldest if more than 5
-    }
+    
+    // Keep only 5 entries and remove entries older than 24 hours
+    const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+    calculationHistory = calculationHistory
+        .filter(entry => (now - entry.savedAt) < TWENTY_FOUR_HOURS)  // Remove entries older than 24 hours
+        .slice(0, 5);  // Keep only 5 most recent
 
     localStorage.setItem('calculationHistory', JSON.stringify(calculationHistory));
     closeSaveDialog();
@@ -1068,6 +1073,19 @@ function loadHistoryFromStorage() {
     if (stored) {
         try {
             calculationHistory = JSON.parse(stored);
+            
+            // Auto-clean entries older than 24 hours
+            const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+            const now = Date.now();
+            calculationHistory = calculationHistory.filter(entry => (now - entry.savedAt) < TWENTY_FOUR_HOURS);
+            
+            // Save cleaned history back
+            if (calculationHistory.length > 0) {
+                localStorage.setItem('calculationHistory', JSON.stringify(calculationHistory));
+            } else {
+                localStorage.removeItem('calculationHistory');
+            }
+            
             renderHistory();
         } catch (e) {
             console.error('Error loading history:', e);
@@ -1100,6 +1118,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Close modal on Escape key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeSaveDialog();
+    });
+    
+    // Enter key to save in car name input
+    $('carNameInput').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            saveCalculation();
+        }
     });
     
     // Close modal when clicking outside

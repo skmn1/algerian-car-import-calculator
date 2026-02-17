@@ -87,7 +87,10 @@ TOTAL                                        = 3,025,860 DZD
   - Each entry shows total cost, centimes, EUR amount
   - Collapsible details panel with all input values
   - Delete individual entries
-  - Auto-saves to browser — persists across sessions
+  - **24-hour expiration** — entries automatically deleted after 24 hours
+  - **Max 5 entries** — oldest entries removed when you save new ones
+  - **Persistent storage** — survives page refreshes and browser restarts
+  - **Enter key support** — press Enter in the car name field to save instantly
 - **Car-specific defaults** — parallel rate 280, customs 20%, shipping €1,500
 - **Custom ▲▼ steppers** — all fields increment/decrement by 10 (no cent-level noise)
 - **Centimes display** — results shown in both DZD and millions centimes (local convention)
@@ -168,12 +171,12 @@ No npm, no build tools, no frameworks. Open it and it works.
 
 Contributions are welcome! Some ideas for improvement:
 
+- [x] History of past calculations (localStorage) — ✅ **Completed**
 - [ ] Add more car-specific customs tax presets (by engine size / category)
 - [ ] Real-time parallel rate fetching from an API
 - [ ] PDF export of the cost breakdown
-- [ ] Arabic / French language toggle
-- [ ] History of past calculations (localStorage)
 - [ ] Share calculation via URL (encoded params)
+- [ ] Bulk import multiple calculations
 
 To contribute:
 ```bash
