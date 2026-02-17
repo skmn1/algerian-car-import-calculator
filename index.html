@@ -395,13 +395,13 @@ function calculate() {
     const total        = carDZD + shipDZD + taxDZD + portFees;
 
     // ── millions centimes (1 centime = 1 000 000 DZD)
-    const millions     = total / 1_000_000;
+    const centimes     = total;
 
     /* ── update UI ──────────────────────────────── */
 
     // Big result
     $('totalDZD').textContent      = fmt(total) + ' DZD';
-    $('totalMillions').textContent = fmt(millions, 2) + ' millions centimes';
+    $('totalMillions').textContent = fmt(centimes, 0) + ' centimes';
     $('totalEUR').textContent      = '€' + fmt(carPrice + shipping, 2);
     $('rateGap').textContent       = `Parallel: ${fmt(parRate)} | Official: ${fmt(offRate)}`;
 
