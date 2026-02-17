@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚗 Algerian Car Import Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'alg-green': '#006233',
+                        'alg-gold': '#D4AF37',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; }
+
+        /* Remove default number arrows */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+
+        /* Custom stepper wrapper */
+        .stepper-wrap { position: relative; display: flex; align-items: center; }
+        .stepper-wrap input {
+            width: 100%;
+            padding: 0.5rem 2.6rem 0.5rem 0.85rem;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            color: #fff;
+            font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .stepper-wrap input:focus {
+            outline: none;
+            border-color: #006233;
+            box-shadow: 0 0 0 3px rgba(0,98,51,0.15);
+        }
+        .stepper-btns {
+            position: absolute;
+            right: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+        .stepper-btns button {
+            width: 22px; height: 16px;
+            background: #334155;
+            border: none;
+            border-radius: 3px;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 9px;
+            line-height: 1;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s, color 0.15s;
+        }
+        .stepper-btns button:hover { background: #006233; color: #fff; }
+
+        /* Tooltip */
+        .tip { position: relative; display: inline-flex; align-items: center; cursor: help; }
+        .tip .tipbox {
+            visibility: hidden; opacity: 0;
+            width: 220px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #cbd5e1;
+            font-size: 11px;
+            line-height: 1.5;
+            text-align: left;
+            border-radius: 8px;
+            padding: 8px 10px;
+            position: absolute;
+            z-index: 10;
+            bottom: calc(100% + 6px);
+            left: 50%; transform: translateX(-50%);
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+        .tip:hover .tipbox { visibility: visible; opacity: 1; }
+
+        /* Result pulse animation */
+        @keyframes pulse-green {
+            0%   { box-shadow: 0 0 0 0 rgba(0,98,51,0.5); }
+            70%  { box-shadow: 0 0 0 10px rgba(0,98,51,0); }
+            100% { box-shadow: 0 0 0 0 rgba(0,98,51,0); }
+        }
+        .result-pulse { animation: pulse-green 0.5s ease-out; }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background: #fff !important; color: #000 !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-gray-100 min-h-screen">
+
+<div class="max-w-5xl mx-auto px-4 py-8">
+
+    <!-- ═══ HEADER ═══ -->
+    <header class="text-center mb-8 no-print">
+        <div class="flex items-center justify-center gap-3 mb-2">
+            <!-- Car icon -->
+            <svg class="w-10 h-10 text-alg-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M5 13l1.5-4.5A2 2 0 018.4 7h7.2a2 2 0 011.9 1.5L19 13M5 13H3v3a1 1 0 001 1h1m14-4h2v3a1 1 0 01-1 1h-1m-14 0h12m-12 0a2 2 0 100 4 2 2 0 000-4zm12 0a2 2 0 100 4 2 2 0 000-4z"/>
+            </svg>
+            <h1 class="text-3xl md:text-4xl font-extrabold text-alg-green tracking-tight">
+                Car Import Calculator
+            </h1>
+        </div>
+        <p class="text-gray-400 text-sm">🇩🇿 حاسبة استيراد السيارات للجزائر &nbsp;|&nbsp; Accurate Landed Cost for Algeria</p>
+    </header>
+
+    <div class="grid lg:grid-cols-5 gap-6">
+
+        <!-- ═══ LEFT: INPUTS ═══ -->
+        <div class="lg:col-span-2 bg-slate-800 rounded-2xl shadow-2xl p-6 space-y-6">
+
+            <!-- Car Price -->
+            <div>
+                <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">🚗 Car Details</h3>
+
+                <label class="block text-sm font-medium mb-1">Car Price (EUR)</label>
+                <div class="stepper-wrap">
+                    <input type="number" id="itemPrice" value="10000" min="0" step="10">
+                    <div class="stepper-btns">
+                        <button onclick="step('itemPrice', 1)">▲</button>
+                        <button onclick="step('itemPrice', -1)">▼</button>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">Shipping Cost (EUR)</label>
+                <div class="stepper-wrap">
+                    <input type="number" id="shippingCost" value="1500" min="0" step="10">
+                    <div class="stepper-btns">
+                        <button onclick="step('shippingCost', 1)">▲</button>
+                        <button onclick="step('shippingCost', -1)">▼</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exchange Rates -->
+            <div>
+                <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">💱 Exchange Rates</h3>
+
+                <label class="block text-sm font-medium mb-1">
+                    Official Rate (DZD/EUR)
+                    <span class="tip ml-1">
+                        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span class="tipbox">Bank of Algeria official rate — used to calculate customs tax base only.</span>
+                    </span>
+                </label>
+                <div class="stepper-wrap mb-3">
+                    <input type="number" id="officialRate" value="153" min="1" step="10">
+                    <div class="stepper-btns">
+                        <button onclick="step('officialRate', 1)">▲</button>
+                        <button onclick="step('officialRate', -1)">▼</button>
+                    </div>
+                </div>
+
+                <label class="block text-sm font-medium mb-1">
+                    Parallel Rate / Square (DZD/EUR)
+                    <span class="tip ml-1">
+                        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span class="tipbox">Real street/market rate (Square) — used to calculate the actual cost of buying euros.</span>
+                    </span>
+                </label>
+                <div class="stepper-wrap">
+                    <input type="number" id="parallelRate" value="280" min="1" step="10">
+                    <div class="stepper-btns">
+                        <button onclick="step('parallelRate', 1)">▲</button>
+                        <button onclick="step('parallelRate', -1)">▼</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fees & Taxes -->
+            <div>
+                <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">🏛️ Fees & Taxes</h3>
+
+                <label class="block text-sm font-medium mb-1">
+                    Customs Tax (%)
+                    <span class="tip ml-1">
+                        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span class="tipbox">Applied ONLY to the car price using the official rate. Shipping is excluded from the customs base.</span>
+                    </span>
+                </label>
+                <div class="stepper-wrap mb-3">
+                    <input type="number" id="customsTax" value="20" min="0" max="100" step="1">
+                    <div class="stepper-btns">
+                        <button onclick="step('customsTax', 1)">▲</button>
+                        <button onclick="step('customsTax', -1)">▼</button>
+                    </div>
+                </div>
+
+                <label class="block text-sm font-medium mb-1">
+                    Port & Admin Fees (DZD)
+                    <span class="tip ml-1">
+                        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span class="tipbox">Includes port handling, documentation, storage & admin processing fees at the port of entry.</span>
+                    </span>
+                </label>
+                <div class="stepper-wrap">
+                    <input type="number" id="portFees" value="90000" min="0" step="10">
+                    <div class="stepper-btns">
+                        <button onclick="step('portFees', 1)">▲</button>
+                        <button onclick="step('portFees', -1)">▼</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VAT Toggle -->
+            <div class="bg-slate-700/60 rounded-xl border border-alg-green/25 p-4">
+                <label class="flex items-start gap-3 cursor-pointer select-none">
+                    <div class="relative mt-0.5">
+                        <input type="checkbox" id="vatDeductible" class="sr-only peer">
+                        <div class="w-10 h-6 bg-slate-600 rounded-full peer-checked:bg-alg-green transition-colors duration-200"></div>
+                        <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 peer-checked:translate-x-4"></div>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-alg-gold text-sm">TVA Déductible (19%)</p>
+                        <p class="text-xs text-gray-400 mt-0.5">نقّص 19% — For NIF-registered businesses only. Reduces car price before all calculations.</p>
+                    </div>
+                </label>
+                <div id="vatSavingsRow" class="hidden mt-3 pt-3 border-t border-slate-600 text-xs text-green-400 font-medium"></div>
+            </div>
+        </div>
+
+        <!-- ═══ RIGHT: RESULTS ═══ -->
+        <div class="lg:col-span-3 flex flex-col gap-5">
+
+            <!-- Big Total Card -->
+            <div id="resultCard" class="bg-gradient-to-br from-alg-green via-emerald-800 to-slate-800 rounded-2xl shadow-2xl p-7">
+                <p class="text-sm text-green-200/70 font-medium mb-3 uppercase tracking-widest">Total Landed Cost</p>
+
+                <!-- DZD big number -->
+                <div id="totalDZD" class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-1">
+                    0 DZD
+                </div>
+
+                <!-- Millions centimes -->
+                <div id="totalMillions" class="text-2xl sm:text-3xl font-bold text-alg-gold mt-2">
+                    0 millions centimes
+                </div>
+
+                <div class="mt-5 pt-4 border-t border-white/15 flex flex-wrap gap-4 text-sm text-green-100/70">
+                    <span>Total EUR: <span id="totalEUR" class="font-semibold text-white">€0.00</span></span>
+                    <span id="rateGap" class="italic"></span>
+                </div>
+            </div>
+
+            <!-- Breakdown Table -->
+            <div class="bg-slate-800 rounded-2xl shadow-xl p-6 flex-1">
+                <h2 class="text-base font-bold text-alg-gold mb-4 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                    Cost Breakdown
+                </h2>
+
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-left text-gray-500 border-b border-slate-700 text-xs uppercase tracking-wide">
+                            <th class="pb-2 font-semibold">Component</th>
+                            <th class="pb-2 font-semibold text-right">Amount (DZD)</th>
+                            <th class="pb-2 font-semibold text-right hidden sm:table-cell">Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700/60">
+                        <tr>
+                            <td class="py-3 text-gray-300">
+                                🚗 Car Cost
+                                <span id="vatBadge" class="hidden ml-2 text-xs bg-green-800 text-green-300 px-1.5 py-0.5 rounded">−19% TVA</span>
+                            </td>
+                            <td class="py-3 text-right font-semibold text-white" id="itemCostDZD">—</td>
+                            <td class="py-3 text-right text-gray-500 text-xs hidden sm:table-cell" id="rateParallelLabel">Parallel</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 text-gray-300">🚢 Shipping Cost</td>
+                            <td class="py-3 text-right font-semibold text-white" id="shippingCostDZD">—</td>
+                            <td class="py-3 text-right text-gray-500 text-xs hidden sm:table-cell" id="rateParallelLabel2">Parallel</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 text-gray-300">
+                                🏛️ Customs Tax
+                                <span class="text-xs text-gray-500 block">(<span id="customsPct">20</span>% on car price only)</span>
+                            </td>
+                            <td class="py-3 text-right font-semibold text-white" id="customsTaxDZD">—</td>
+                            <td class="py-3 text-right text-gray-500 text-xs hidden sm:table-cell" id="rateOfficialLabel">Official</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 text-gray-300">⚓ Port & Admin Fees</td>
+                            <td class="py-3 text-right font-semibold text-white" id="portFeesDZD">—</td>
+                            <td class="py-3 text-right text-gray-500 text-xs hidden sm:table-cell">Fixed</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="border-t-2 border-alg-green/40 bg-alg-green/10 rounded-b-xl">
+                            <td class="py-3 pl-2 font-bold text-alg-gold rounded-bl-xl">TOTAL</td>
+                            <td class="py-3 text-right font-extrabold text-lg text-alg-gold" id="totalRow">—</td>
+                            <td class="py-3 hidden sm:table-cell rounded-br-xl"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <!-- Info note -->
+            <div class="bg-blue-950/50 border border-blue-700/30 rounded-xl px-4 py-3 text-xs text-blue-300 leading-relaxed">
+                <strong>ℹ️ How it works:</strong>
+                Car purchase &amp; shipping are converted at the <em>parallel rate</em> (what you actually pay).
+                Customs tax is calculated only on the <em>car price</em> using the <em>official rate</em> (government valuation).
+                Shipping is excluded from the customs base.
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-10 text-center text-gray-600 text-xs no-print">
+        🇩🇿 Made for Algerian car importers &nbsp;|&nbsp; Exchange rates fluctuate — always verify before purchasing
+    </footer>
+</div>
+
+<script>
+'use strict';
+
+/* ── helpers ─────────────────────────────────────── */
+const $ = id => document.getElementById(id);
+
+function fmt(n, dec = 0) {
+    return Number(n).toLocaleString('fr-DZ', {
+        minimumFractionDigits: dec,
+        maximumFractionDigits: dec
+    });
+}
+
+/* Step buttons — step by 10 (or 1 for % fields) */
+function step(id, dir) {
+    const el = $(id);
+    const s  = parseFloat(el.step) || 10;
+    const v  = parseFloat(el.value) || 0;
+    const min = parseFloat(el.min ?? '-Infinity');
+    el.value = Math.max(min, v + dir * s);
+    calculate();
+}
+
+/* Debounce */
+let _t;
+function deb(fn, ms = 120) { clearTimeout(_t); _t = setTimeout(fn, ms); }
+
+/* ── main calculation ────────────────────────────── */
+function calculate() {
+    const carPrice     = Math.max(0, parseFloat($('itemPrice').value)    || 0);
+    const shipping     = Math.max(0, parseFloat($('shippingCost').value) || 0);
+    const offRate      = Math.max(1, parseFloat($('officialRate').value)  || 153);
+    const parRate      = Math.max(1, parseFloat($('parallelRate').value)  || 280);
+    const taxPct       = Math.max(0, parseFloat($('customsTax').value)    || 0);
+    const portFees     = Math.max(0, parseFloat($('portFees').value)      || 0);
+    const vat          = $('vatDeductible').checked;
+
+    // STEP 1 — VAT deduction (if applicable)
+    const adjCar       = vat ? carPrice * 0.81 : carPrice;
+    const vatSaved     = vat ? carPrice * 0.19 : 0;
+
+    // STEP 2 — Purchase costs at PARALLEL rate
+    const carDZD       = adjCar   * parRate;
+    const shipDZD      = shipping * parRate;
+
+    // STEP 3 — Customs base = car price ONLY at OFFICIAL rate
+    const customsBase  = adjCar * offRate;
+
+    // STEP 4 — Customs tax
+    const taxDZD       = customsBase * (taxPct / 100);
+
+    // STEP 5 — Grand total
+    const total        = carDZD + shipDZD + taxDZD + portFees;
+
+    // ── millions centimes (1 centime = 1 000 000 DZD)
+    const millions     = total / 1_000_000;
+
+    /* ── update UI ──────────────────────────────── */
+
+    // Big result
+    $('totalDZD').textContent      = fmt(total) + ' DZD';
+    $('totalMillions').textContent = fmt(millions, 2) + ' millions centimes';
+    $('totalEUR').textContent      = '€' + fmt(carPrice + shipping, 2);
+    $('rateGap').textContent       = `Parallel: ${fmt(parRate)} | Official: ${fmt(offRate)}`;
+
+    // Breakdown
+    $('itemCostDZD').textContent   = fmt(carDZD);
+    $('shippingCostDZD').textContent = fmt(shipDZD);
+    $('customsTaxDZD').textContent = fmt(taxDZD);
+    $('portFeesDZD').textContent   = fmt(portFees);
+    $('totalRow').textContent      = fmt(total);
+    $('customsPct').textContent    = taxPct;
+
+    // Rate labels in table
+    $('rateParallelLabel').textContent  = `Parallel (${fmt(parRate)})`;
+    $('rateParallelLabel2').textContent = `Parallel (${fmt(parRate)})`;
+    $('rateOfficialLabel').textContent  = `Official (${fmt(offRate)})`;
+
+    // VAT badge & savings
+    $('vatBadge').classList.toggle('hidden', !vat);
+    const savRow = $('vatSavingsRow');
+    if (vat) {
+        savRow.classList.remove('hidden');
+        savRow.textContent =
+            `✓ TVA savings: €${fmt(vatSaved, 2)} saved (${fmt(vatSaved * parRate)} DZD at parallel rate)`;
+    } else {
+        savRow.classList.add('hidden');
+    }
+
+    // Pulse animation on result card
+    const card = $('resultCard');
+    card.classList.remove('result-pulse');
+    void card.offsetWidth; // reflow
+    card.classList.add('result-pulse');
+}
+
+/* ── event listeners ─────────────────────────────── */
+['itemPrice','shippingCost','officialRate','parallelRate','customsTax','portFees']
+    .forEach(id => $(id).addEventListener('input', () => deb(calculate)));
+
+$('vatDeductible').addEventListener('change', calculate);
+
+// run on load
+calculate();
+</script>
+</body>
+</html>
