@@ -103,6 +103,9 @@ TOTAL                                        = 3,025,860 DZD
 
 ## 🚀 Usage
 
+### 🌐 Try Online (No Installation)
+**[Open the live app](https://algerian-car-import-calculator.vercel.app/)** — hosted on Vercel, fully functional, no setup required.
+
 ### Option 1 — Open directly in browser
 ```bash
 # Just double-click the file, or:
