@@ -900,6 +900,9 @@ $('vatDeductible').addEventListener('change', calculate);
 /* ── Calculation History Management ────────────────────── */
 let calculationHistory = [];
 
+const STORAGE_KEY = 'calculationHistory';
+const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+
 function openSaveDialog() {
     $('saveModal').classList.remove('hidden');
     $('carNameInput').focus();
@@ -953,12 +956,20 @@ function saveCalculation() {
     calculationHistory.unshift(entry); // Add to beginning (newest first)
     
     // Keep only 5 entries and remove entries older than 24 hours
-    const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
     calculationHistory = calculationHistory
         .filter(entry => (now - entry.savedAt) < TWENTY_FOUR_HOURS)  // Remove entries older than 24 hours
         .slice(0, 5);  // Keep only 5 most recent
 
-    localStorage.setItem('calculationHistory', JSON.stringify(calculationHistory));
+    // Store to localStorage with error handling
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(calculationHistory));
+        console.log('✓ Saved to localStorage:', calculationHistory.length, 'entries');
+    } catch (e) {
+        console.error('✗ Failed to save to localStorage:', e);
+        alert('Could not save history. Please check your browser storage settings.');
+        return;
+    }
+    
     closeSaveDialog();
     renderHistory();
     
@@ -1069,28 +1080,80 @@ function escapeHtml(text) {
 }
 
 function loadHistoryFromStorage() {
-    const stored = localStorage.getItem('calculationHistory');
-    if (stored) {
-        try {
+    try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        console.log('📦 localStorage.getItem result:', stored ? 'Found data' : 'No data');
+        
+        if (stored) {
             calculationHistory = JSON.parse(stored);
+            console.log('✓ Loaded from localStorage:', calculationHistory.length, 'entries');
             
             // Auto-clean entries older than 24 hours
-            const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
             const now = Date.now();
-            calculationHistory = calculationHistory.filter(entry => (now - entry.savedAt) < TWENTY_FOUR_HOURS);
+            const beforeClean = calculationHistory.length;
+            calculationHistory = calculationHistory.filter(entry => {
+                const age = now - entry.savedAt;
+                const isValid = age < TWENTY_FOUR_HOURS;
+                if (!isValid) console.log('  - Removed expired entry:', entry.carName, `(age: ${Math.round(age/1000/60)} min)`);
+                return isValid;
+            });
+            
+            console.log(`🗑️  Cleaned: ${beforeClean} → ${calculationHistory.length} entries`);
             
             // Save cleaned history back
             if (calculationHistory.length > 0) {
-                localStorage.setItem('calculationHistory', JSON.stringify(calculationHistory));
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(calculationHistory));
+                console.log('✓ Saved cleaned history back to localStorage');
             } else {
-                localStorage.removeItem('calculationHistory');
+                localStorage.removeItem(STORAGE_KEY);
+                console.log('✓ Removed empty history from localStorage');
             }
             
             renderHistory();
-        } catch (e) {
-            console.error('Error loading history:', e);
+        } else {
+            console.log('ℹ️  No history found in localStorage on first load');
         }
+    } catch (e) {
+        console.error('✗ Error loading history:', e);
+        calculationHistory = [];
     }
+}
+
+// Debug function - call from browser console: checkHistory()
+function checkHistory() {
+    console.clear();
+    console.log('%c📊 HISTORY DEBUG INFO', 'font-size: 16px;font-weight:bold;color:#006233');
+    console.log('%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'color:#006233');
+    
+    console.log('\n1. Browser localStorage:');
+    const stored = localStorage.getItem(STORAGE_KEY);
+    console.log('   Key:', STORAGE_KEY);
+    console.log('   Data exists:', !!stored);
+    if (stored) console.log('   Data size:', stored.length, 'bytes');
+    
+    console.log('\n2. Memory (calculationHistory array):');
+    console.log('   Entries:', calculationHistory.length);
+    if (calculationHistory.length > 0) {
+        console.table(calculationHistory.map(e => ({
+            'Car': e.carName,
+            'Total DZD': fmt(e.totalDZD),
+            'Centimes': fmt(e.centimes, 0),
+            'Saved': new Date(e.savedAt).toLocaleTimeString()
+        })));
+    }
+    
+    console.log('\n3. Full stored objects:');
+    console.log(calculationHistory);
+    
+    console.log('\n%c💡 TIP: Type clearHistory() to clear all history', 'color:#D4AF37;font-size:12px');
+}
+
+// Clear history function - call from console: clearHistory()
+function clearHistory() {
+    localStorage.removeItem(STORAGE_KEY);
+    calculationHistory = [];
+    renderHistory();
+    console.log('✓ History cleared');
 }
 
 // Initialize language and calculate on load
@@ -1124,6 +1187,7 @@ document.addEventListener('DOMContentLoaded', () => {
     $('carNameInput').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
+            console.log('⌨️  Enter key pressed - saving calculation');
             saveCalculation();
         }
     });
@@ -1132,6 +1196,12 @@ document.addEventListener('DOMContentLoaded', () => {
     $('saveModal').addEventListener('click', (e) => {
         if (e.target === $('saveModal')) closeSaveDialog();
     });
+    
+    // Log startup info
+    console.log('%c🚀 App initialized', 'font-size:14px;font-weight:bold;color:#006233');
+    console.log('💾 Storage Key:', STORAGE_KEY);
+    console.log('ℹ️  Debug: Open console and type checkHistory() to inspect storage');
+    console.log('ℹ️  Debug: Type clearHistory() to clear all saved calculations');
 });
 
 </script>
