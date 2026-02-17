@@ -15,6 +15,8 @@
 
 > Open `algerian-car-import-calculator.html` directly in any browser. No server, no install, no build step.
 
+![App Screenshot](./sc-desktop-view.png)
+
 ---
 
 ## 🧠 The Problem This Solves
