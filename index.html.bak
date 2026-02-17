@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="fr" id="htmlRoot">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="4jmDWblA8tyqUrdOR2tqvHxu3ceZ8lA2ttjW9iWHiEU" />
+    <title id="pageTitle">🚗 Algerian Car Import Calculator</title>
+    
+    <!-- Open Graph Meta Tags for Social Media -->
+    <meta property="og:title" content="🚗 Algerian Car Import Calculator">
+    <meta property="og:description" content="Accurate car import cost calculator for Algeria. Handles official vs parallel exchange rates, customs taxes, and TVA deduction.">
+    <meta property="og:image" content="https://algerian-car-import-calculator.vercel.app/thumbnail.png?v=202602171">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://algerian-car-import-calculator.vercel.app/">
+    <meta property="og:locale" content="fr_FR">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="🚗 Algerian Car Import Calculator">
+    <meta name="twitter:description" content="Calculate total landed cost for importing cars to Algeria with dual exchange rates">
+    <meta name="twitter:image" content="https://algerian-car-import-calculator.vercel.app/thumbnail.png?v=202602171">
+    
+    <!-- Additional Meta Tags for Social Media -->
+    <meta name="description" content="Calculate exact import costs for cars to Algeria with official and parallel exchange rates. Fast, accurate calculator for Algerian car importers.">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'alg-green': '#006233',
+                        'alg-gold': '#D4AF37',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; }
+
+        /* Mobile-first text sizing */
+        @media (max-width: 640px) {
+            body { font-size: 14px; }
+            label { font-size: 0.875rem; }
+        }
+
+        /* Remove default number arrows */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+
+        /* Custom stepper wrapper */
+        .stepper-wrap { position: relative; display: flex; align-items: center; }
+        .stepper-wrap input {
+            width: 100%;
+            padding: 0.5rem 2.6rem 0.5rem 0.85rem;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            color: #fff;
+            font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .stepper-wrap input:focus {
+            outline: none;
+            border-color: #006233;
+            box-shadow: 0 0 0 3px rgba(0,98,51,0.15);
+        }
+        .stepper-btns {
+            position: absolute;
+            right: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+        .stepper-btns button {
+            width: 22px; height: 16px;
+            background: #334155;
+            border: none;
+            border-radius: 3px;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 9px;
+            line-height: 1;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s, color 0.15s;
+        }
+        .stepper-btns button:hover { background: #006233; color: #fff; }
+
+        /* Tooltip */
+        .tip { position: relative; display: inline-flex; align-items: center; cursor: help; }
+        .tip .tipbox {
+            visibility: hidden; opacity: 0;
+            width: 220px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #cbd5e1;
+            font-size: 11px;
+            line-height: 1.5;
+            text-align: left;
+            border-radius: 8px;
+            padding: 8px 10px;
+            position: absolute;
+            z-index: 10;
+            bottom: calc(100% + 6px);
+            left: 50%; transform: translateX(-50%);
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+        .tip:hover .tipbox { visibility: visible; opacity: 1; }
+
+        /* Language toggle */
+        .lang-btn {
+            color: #cbd5e1;
+            transition: all 0.2s ease;
+        }
+        .lang-btn.active {
+            background: #006233;
+            color: #fff;
+            font-weight: 600;
+        }
+        .lang-btn:hover:not(.active) {
+            color: #e2e8f0;
+            background: #475569;
+        }
+
+        /* Result pulse animation */
+        @keyframes pulse-green {
+            0%   { box-shadow: 0 0 0 0 rgba(0,98,51,0.5); }
+            70%  { box-shadow: 0 0 0 10px rgba(0,98,51,0); }
+            100% { box-shadow: 0 0 0 0 rgba(0,98,51,0); }
+        }
+        .result-pulse { animation: pulse-green 0.5s ease-out; }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background: #fff !important; color: #000 !important; }
+        }
+
+        /* History Panel and Modal Styles */
+        .history-info-banner {
+            background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+            border: 1px solid #334155;
+            border-left: 3px solid #D4AF37;
+            border-radius: 0.5rem;
+            padding: 0.6rem 0.85rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            line-height: 1.4;
+        }
+        .history-info-banner span.icon {
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .history-info-banner strong {
+            color: #D4AF37;
+        }
+        .history-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid #334155;
+            border-radius: 0.75rem;
+            padding: 0.85rem 1rem;
+            transition: all 0.2s ease;
+        }
+        .history-card:hover {
+            border-color: #006233;
+            box-shadow: 0 2px 10px rgba(0, 98, 51, 0.12);
+        }
+        .history-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            user-select: none;
+            gap: 0.5rem;
+        }
+        .history-card-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .history-card-date {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-top: 0.1rem;
+        }
+        .delete-btn {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.3rem 0.6rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .delete-btn:hover {
+            background: #ef4444;
+            color: white;
+        }
+        .history-card-result {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: nowrap;
+        }
+        .result-item {
+            flex: 1;
+            min-width: 0;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 0.375rem;
+            padding: 0.35rem 0.5rem;
+            text-align: center;
+        }
+        .result-label {
+            font-size: 0.6rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.1rem;
+        }
+        .result-value {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #006233;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .result-value.gold {
+            color: #D4AF37;
+        }
+        .collapsible-toggle {
+            width: 100%;
+            text-align: center;
+            background: transparent;
+            border: 1px solid #1e293b;
+            color: #64748b;
+            padding: 0.35rem 0.75rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-top: 0.4rem;
+        }
+        .collapsible-toggle:hover {
+            background: #1e293b;
+            color: #cbd5e1;
+            border-color: #475569;
+        }
+        .collapsible-toggle.active {
+            background: #006233;
+            border-color: #006233;
+            color: white;
+        }
+        .collapsible-content {
+            display: none;
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-top: none;
+            padding: 0.6rem 0.75rem;
+            font-size: 0.75rem;
+            border-radius: 0 0 0.375rem 0.375rem;
+            margin-top: -1px;
+        }
+        .collapsible-content.show {
+            display: block;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.3rem 0;
+            border-bottom: 1px solid #1e293b;
+            color: #cbd5e1;
+            font-size: 0.75rem;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        .detail-label {
+            color: #64748b;
+        }
+        .detail-value {
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+        /* Mobile compact overrides */
+        @media (max-width: 640px) {
+            .history-card { padding: 0.65rem 0.75rem; }
+            .history-card-title { font-size: 0.85rem; }
+            .result-value { font-size: 0.75rem; }
+            .result-label { font-size: 0.55rem; }
+            .result-item { padding: 0.25rem 0.35rem; }
+            .history-card-result { gap: 0.35rem; }
+            .delete-btn { padding: 0.25rem 0.5rem; font-size: 0.65rem; }
+            .collapsible-toggle { padding: 0.3rem; font-size: 0.65rem; }
+            .collapsible-content { padding: 0.5rem; font-size: 0.7rem; }
+            .detail-row { padding: 0.2rem 0; font-size: 0.7rem; }
+            .history-info-banner { font-size: 0.65rem; padding: 0.5rem 0.65rem; }
+        }
+    
+    </style>
+</head>
+<body class="bg-slate-950 text-gray-100 min-h-screen">
+
+<div class="max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
+
+    <!-- ═══ HEADER ═══ -->
+    <header class="text-center mb-6 sm:mb-8 no-print">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center justify-center gap-2 sm:gap-3 flex-1">
+                <!-- Car icon -->
+                <svg class="w-8 sm:w-10 h-8 sm:h-10 text-alg-green" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M5 13l1.5-4.5A2 2 0 018.4 7h7.2a2 2 0 011.9 1.5L19 13M5 13H3v3a1 1 0 001 1h1m14-4h2v3a1 1 0 01-1 1h-1m-14 0h12m-12 0a2 2 0 100 4 2 2 0 000-4zm12 0a2 2 0 100 4 2 2 0 000-4z"/>
+                </svg>
+                <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-alg-green tracking-tight" id="mainTitle">
+                    Car Import Calculator
+                </h1>
+            </div>
+            <!-- Language Toggle -->
+            <div class="flex items-center gap-1.5 bg-slate-700/40 rounded-lg p-1.5 backdrop-blur-sm border border-slate-700 flex-wrap">
+                <button id="langBtn-en" onclick="setLanguage('en')" class="lang-btn px-2.5 py-1 text-xs font-medium rounded transition-all duration-200" data-lang="en">EN</button>
+                <button id="langBtn-fr" onclick="setLanguage('fr')" class="lang-btn active px-2.5 py-1 text-xs font-medium rounded transition-all duration-200" data-lang="fr">FR</button>
+                <button id="langBtn-ar" onclick="setLanguage('ar')" class="lang-btn px-2.5 py-1 text-xs font-medium rounded transition-all duration-200" data-lang="ar">AR</button>
+                <button id="langBtn-es" onclick="setLanguage('es')" class="lang-btn px-2.5 py-1 text-xs font-medium rounded transition-all duration-200" data-lang="es">ES</button>
+            </div>
+        </div>
+        <p class="text-gray-400 text-xs sm:text-sm px-2" id="subtitle">🇩🇿 حاسبة استيراد السيارات للجزائر  |  Accurate Landed Cost for Algeria</p>
+    </header>
+
+    <!-- ═══ PROFESSIONAL INTRO SECTION ═══ -->
+    <div class="bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 rounded-2xl shadow-2xl p-5 sm:p-8 mb-6 border border-slate-600 no-print">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 mb-4">
+                <div class="flex-shrink-0">
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-alg-green to-emerald-600 rounded-full flex items-center justify-center shadow-lg">
+                        <svg class="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="flex-1 text-center sm:text-left">
+                    <h2 class="text-xl sm:text-2xl font-bold text-white mb-2" id="introTitle" data-i18n="introTitle">Professional Car Import Cost Calculator</h2>
+                    <p class="text-sm sm:text-base text-gray-300 leading-relaxed" id="introDesc" data-i18n="introDesc">
+                        Advanced calculation engine designed for Algerian automotive importers. Accurately processes dual exchange rate systems, customs regulations, and VAT deductions with precision.
+                    </p>
+                </div>
+            </div>
+            <div class="border-t border-slate-600 pt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-alg-gold/10 rounded-full flex items-center justify-center border border-alg-gold/30">
+                        <svg class="w-5 h-5 text-alg-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-400 uppercase tracking-wider" data-i18n="developedBy">Developed By</p>
+                        <p class="text-sm sm:text-base font-semibold text-alg-gold">Dr. Soulimane KAMNI</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-gray-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span data-i18n="trustBadge">Trusted by Import Professionals</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ THUMBNAIL IMAGE ═══ -->
+    <div class="mb-6 flex justify-center no-print">
+        <img src="thumbnail.png" alt="Algerian Car Import Calculator" class="rounded-lg shadow-lg max-w-full h-auto max-h-60 sm:max-h-80 md:max-h-96">
+    </div>
+
+    <div class="grid lg:grid-cols-5 gap-4 sm:gap-6">
+
+        <!-- ═══ LEFT: INPUTS ═══ -->
+        <div class="lg:col-span-2 bg-slate-800 rounded-2xl shadow-2xl p-4 sm:p-6 space-y-4 sm:space-y-6">
+
+            <!-- Car Price -->
+            <div>
+                <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3" data-i18n="carDetails">🚗 Car Details</h3>
+
+                <label class="block text-sm font-medium mb-1" data-i18n="carPrice">Car Price (EUR)</label>
+                <div class="stepper-wrap">
+                    <input type="number" id="itemPrice" value="10000" min="0" step="10">
+                    <div class="stepper-btns">
+                        <button onclick="step('itemPrice', 1)">▲</button>
+                        <button onclick="step('itemPrice', -1)">▼</button>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1" data-i18n="shippingCost">Shipping Cost (EUR)</label>
+                <div class="stepper-wrap">
+                    <input type="number" id="shippingCost" value="1500" min="0" step="10">
+                    <div class="stepper-btns">
+                        <button onclick="step('shippingCost', 1)">▲</button>
+                        <button onclick="step('shippingCost', -1)">▼</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exchange Rates -->
+            <div>
+                <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3" data-i18n="exchangeRates">💱 Exchange Rates</h3>
+
+                <label class="block text-sm font-medium mb-1">
+                    <span data-i18n="officialRate">Official Rate (DZD/EUR)</span>
+                    <span class="tip ml-1">
+                        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span class="tipbox" data-i18n="officialRateTip">Bank of Algeria official rate — used to calculate customs tax base only.</span>
+                    </span>
+                </label>
+                <div class="stepper-wrap mb-3">
+                    <input type="number" id="officialRate" value="153" min="1" step="10">
+                    <div class="stepper-btns">
+                        <button onclick="step('officialRate', 1)">▲</button>
+                        <button onclick="step('officialRate', -1)">▼</button>
+                    </div>
+                </div>
+
+                <label class="block text-sm font-medium mb-1">
+                    <span data-i18n="parallelRate">Parallel Rate / Square (DZD/EUR)</span>
+                    <span class="tip ml-1">
+                        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span class="tipbox" data-i18n="parallelRateTip">Real street/market rate (Square) — used to calculate the actual cost of buying euros.</span>
+                    </span>
+                </label>
+                <div class="stepper-wrap">
+                    <input type="number" id="parallelRate" value="280" min="1" step="10">
+                    <div class="stepper-btns">
+                        <button onclick="step('parallelRate', 1)">▲</button>
+                        <button onclick="step('parallelRate', -1)">▼</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fees & Taxes -->
+            <div>
+                <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3" data-i18n="feesAndTaxes">🏛️ Fees & Taxes</h3>
+
+                <label class="block text-sm font-medium mb-1">
+                    <span data-i18n="customsTax">Customs Tax (%)</span>
+                    <span class="tip ml-1">
+                        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span class="tipbox" data-i18n="customsTaxTip">Applied ONLY to the car price using the official rate. Shipping is excluded from the customs base.</span>
+                    </span>
+                </label>
+                <div class="stepper-wrap mb-3">
+                    <input type="number" id="customsTax" value="20" min="0" max="100" step="1">
+                    <div class="stepper-btns">
+                        <button onclick="step('customsTax', 1)">▲</button>
+                        <button onclick="step('customsTax', -1)">▼</button>
+                    </div>
+                </div>
+
+                <label class="block text-sm font-medium mb-1">
+                    <span data-i18n="portFees">Port & Admin Fees (DZD)</span>
+                    <span class="tip ml-1">
+                        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span class="tipbox" data-i18n="portFeesTip">Includes port handling, documentation, storage & admin processing fees at the port of entry.</span>
+                    </span>
+                </label>
+                <div class="stepper-wrap">
+                    <input type="number" id="portFees" value="90000" min="0" step="10">
+                    <div class="stepper-btns">
+                        <button onclick="step('portFees', 1)">▲</button>
+                        <button onclick="step('portFees', -1)">▼</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VAT Toggle -->
+            <div class="bg-slate-700/60 rounded-xl border border-alg-green/25 p-3 sm:p-4">
+                <label class="flex items-start gap-3 cursor-pointer select-none">
+                    <div class="relative mt-0.5">
+                        <input type="checkbox" id="vatDeductible" class="sr-only peer">
+                        <div class="w-10 h-6 bg-slate-600 rounded-full peer-checked:bg-alg-green transition-colors duration-200"></div>
+                        <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 peer-checked:translate-x-4"></div>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-alg-gold text-sm" data-i18n="tvaDeduce">TVA Déductible (19%)</p>
+                        <p class="text-xs text-gray-400 mt-0.5" data-i18n="tvaTip">نقّص 19% — For NIF-registered businesses only. Reduces car price before all calculations.</p>
+                    </div>
+                </label>
+                <div id="vatSavingsRow" class="hidden mt-3 pt-3 border-t border-slate-600 text-xs text-green-400 font-medium"></div>
+            </div>
+        </div>
+
+        <!-- ═══ RIGHT: RESULTS ═══ -->
+        <div class="lg:col-span-3 flex flex-col gap-4 sm:gap-5">
+
+            <!-- Big Total Card -->
+            <div id="resultCard" class="bg-gradient-to-br from-alg-green via-emerald-800 to-slate-800 rounded-2xl shadow-2xl p-5 sm:p-7">
+                <p class="text-sm text-green-200/70 font-medium mb-3 uppercase tracking-widest" data-i18n="totalLandedCost">Total Landed Cost</p>
+
+                <!-- DZD big number -->
+                <div id="totalDZD" class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-1">
+                    0 DZD
+                </div>
+
+                <!-- Centimes -->
+                <div id="totalMillions" class="text-2xl sm:text-3xl font-bold text-alg-gold mt-2">
+                    0 centimes
+                </div>
+
+                <div class="mt-5 pt-4 border-t border-white/15 flex flex-wrap gap-4 text-sm text-green-100/70">
+                    <span><span data-i18n="totalEUR">Total EUR</span>: <span id="totalEUR" class="font-semibold text-white">€0.00</span></span>
+                    <span id="rateGap" class="italic"></span>
+                </div>
+            </div>
+
+            <!-- Save Calculation Button -->
+            <button onclick="openSaveDialog()" class="w-full bg-alg-gold text-slate-900 font-semibold py-3 px-4 rounded-lg hover:bg-yellow-400 transition-all duration-200 flex items-center justify-center gap-2 no-print">
+                💾 <span data-i18n="saveCalculation">Save Calculation</span>
+            </button>
+
+            <!-- Breakdown Table -->
+            <div class="bg-slate-800 rounded-2xl shadow-xl p-4 sm:p-6 flex-1">
+                <h2 class="text-base font-bold text-alg-gold mb-4 flex items-center gap-2" data-i18n="costBreakdown">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                    Cost Breakdown
+                </h2>
+
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-left text-gray-500 border-b border-slate-700 text-xs uppercase tracking-wide">
+                            <th class="pb-2 font-semibold" data-i18n="component">Component</th>
+                            <th class="pb-2 font-semibold text-right" data-i18n="amount">Amount (DZD)</th>
+                            <th class="pb-2 font-semibold text-right hidden sm:table-cell" data-i18n="rate">Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700/60">
+                        <tr>
+                            <td class="py-3 text-gray-300">
+                                <span data-i18n="carCost">🚗 Car Cost</span>
+                                <span id="vatBadge" class="hidden ml-2 text-xs bg-green-800 text-green-300 px-1.5 py-0.5 rounded" data-i18n="vatBadge">−19% TVA</span>
+                            </td>
+                            <td class="py-3 text-right font-semibold text-white" id="itemCostDZD">—</td>
+                            <td class="py-3 text-right text-gray-500 text-xs hidden sm:table-cell" id="rateParallelLabel">Parallel</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 text-gray-300" data-i18n="shippingLabel">🚢 Shipping Cost</td>
+                            <td class="py-3 text-right font-semibold text-white" id="shippingCostDZD">—</td>
+                            <td class="py-3 text-right text-gray-500 text-xs hidden sm:table-cell" id="rateParallelLabel2">Parallel</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 text-gray-300">
+                                <span data-i18n="customsLabel">🏛️ Customs Tax</span>
+                                <span class="text-xs text-gray-500 block" data-i18n="customsDetail">(<span id="customsPct">20</span>% on car price only)</span>
+                            </td>
+                            <td class="py-3 text-right font-semibold text-white" id="customsTaxDZD">—</td>
+                            <td class="py-3 text-right text-gray-500 text-xs hidden sm:table-cell" id="rateOfficialLabel">Official</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 text-gray-300" data-i18n="portLabel">⚓ Port & Admin Fees</td>
+                            <td class="py-3 text-right font-semibold text-white" id="portFeesDZD">—</td>
+                            <td class="py-3 text-right text-gray-500 text-xs hidden sm:table-cell" data-i18n="fixed">Fixed</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="border-t-2 border-alg-green/40 bg-alg-green/10 rounded-b-xl">
+                            <td class="py-3 pl-2 font-bold text-alg-gold rounded-bl-xl" data-i18n="total">TOTAL</td>
+                            <td class="py-3 text-right font-extrabold text-lg text-alg-gold" id="totalRow">—</td>
+                            <td class="py-3 hidden sm:table-cell rounded-br-xl"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <!-- Info note -->
+            <div class="bg-blue-950/50 border border-blue-700/30 rounded-xl px-3 sm:px-4 py-2 sm:py-3 text-xs text-blue-300 leading-relaxed">
+                <strong data-i18n="infoBox">ℹ️ How it works:</strong>
+                <span data-i18n="infoText">Car purchase & shipping are converted at the parallel rate (what you actually pay). Customs tax is calculated only on the car price using the official rate (government valuation). Shipping is excluded from the customs base.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ ENHANCED FOOTER ═══ -->
+    <footer class="mt-10 sm:mt-12 bg-gradient-to-b from-slate-900 to-slate-950 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden no-print">
+        <div class="bg-gradient-to-r from-alg-green/20 via-transparent to-alg-gold/20 px-6 py-8 sm:px-8 sm:py-10">
+            <!-- Top Section -->
+            <div class="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-8">
+                <!-- About -->
+                <div class="text-center sm:text-left">
+                    <h3 class="text-sm font-bold text-alg-gold uppercase tracking-wider mb-3" data-i18n="footerAboutTitle">About</h3>
+                    <p class="text-xs text-gray-400 leading-relaxed" data-i18n="footerAboutText">
+                        Professional-grade import cost calculator engineered for accuracy and ease of use. Handles Algeria's complex dual exchange rate system with precision.
+                    </p>
+                </div>
+                
+                <!-- Features -->
+                <div class="text-center sm:text-left">
+                    <h3 class="text-sm font-bold text-alg-gold uppercase tracking-wider mb-3" data-i18n="footerFeaturesTitle">Key Features</h3>
+                    <ul class="text-xs text-gray-400 space-y-1.5">
+                        <li class="flex items-center justify-center sm:justify-start gap-2">
+                            <svg class="w-3 h-3 text-alg-green flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span data-i18n="footerFeature1">Dual Exchange Rate Logic</span>
+                        </li>
+                        <li class="flex items-center justify-center sm:justify-start gap-2">
+                            <svg class="w-3 h-3 text-alg-green flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span data-i18n="footerFeature2">Real-time Calculations</span>
+                        </li>
+                        <li class="flex items-center justify-center sm:justify-start gap-2">
+                            <svg class="w-3 h-3 text-alg-green flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span data-i18n="footerFeature3">Mobile Optimized</span>
+                        </li>
+                        <li class="flex items-center justify-center sm:justify-start gap-2">
+                            <svg class="w-3 h-3 text-alg-green flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span data-i18n="footerFeature4">Calculation History</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Contact/Credit -->
+                <div class="text-center sm:text-left">
+                    <h3 class="text-sm font-bold text-alg-gold uppercase tracking-wider mb-3" data-i18n="footerDeveloperTitle">Developer</h3>
+                    <div class="flex items-center justify-center sm:justify-start gap-3 mb-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-alg-green to-emerald-600 rounded-full flex items-center justify-center shadow-lg">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-white">Dr. Soulimane KAMNI</p>
+                            <p class="text-xs text-gray-400" data-i18n="footerDeveloperRole">Full-Stack Developer</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-400 leading-relaxed" data-i18n="footerDeveloperDesc">
+                        Specialized in financial calculators and enterprise web applications.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Divider -->
+            <div class="border-t border-slate-700 mb-6"></div>
+            
+            <!-- Bottom Section -->
+            <div class="max-w-5xl mx-auto">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-4">
+                    <div class="flex items-center gap-2 text-xs text-gray-400">
+                        <svg class="w-4 h-4 text-alg-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        </svg>
+                        <span data-i18n="footerSecure">Secure & Private — All calculations performed locally</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-gray-400">
+                        <svg class="w-4 h-4 text-alg-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span data-i18n="footerUpdated">Updated: February 2026</span>
+                    </div>
+                </div>
+                
+                <!-- Disclaimer -->
+                <div class="bg-slate-800/50 rounded-xl border border-slate-700 p-4 mb-4">
+                    <div class="flex items-start gap-3">
+                        <svg class="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <div>
+                            <p class="text-xs font-semibold text-yellow-400 mb-1" data-i18n="footerDisclaimerTitle">Important Notice</p>
+                            <p class="text-xs text-gray-400 leading-relaxed" data-i18n="footerDisclaimer">
+                                Exchange rates fluctuate daily. Always verify current rates with official sources before making purchase decisions. This calculator provides estimates and should not be considered financial advice.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Copyright -->
+                <div class="text-center text-xs text-gray-500">
+                    <p>
+                        🇩🇿 <span data-i18n="footerCopyright">Made with precision for Algerian car importers</span> &nbsp;•&nbsp; 
+                        <span>© 2026 Dr. Soulimane KAMNI</span> &nbsp;•&nbsp; 
+                        <span data-i18n="footerRights">All rights reserved</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Save Calculation Modal -->
+    <div id="saveModal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 no-print">
+        <div class="bg-slate-800 rounded-2xl p-6 sm:p-8 max-w-md w-full mx-4 border border-slate-700">
+            <h3 class="text-xl font-bold text-alg-gold mb-4" data-i18n="enterCarName">Enter Car Name/Model</h3>
+            <input type="text" id="carNameInput" placeholder="e.g., Toyota Corolla 2022" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:border-alg-green focus:outline-none mb-4">
+            <div class="flex gap-3">
+                <button onclick="closeSaveDialog()" class="flex-1 bg-slate-700 text-white py-2 rounded-lg hover:bg-slate-600 transition-all" data-i18n="cancelBtn">Cancel</button>
+                <button onclick="saveCalculation()" class="flex-1 bg-alg-gold text-slate-900 font-semibold py-2 rounded-lg hover:bg-yellow-400 transition-all" data-i18n="saveBtn">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calculation History Panel -->
+    <div id="historyPanel" class="hidden mt-6 sm:mt-10 bg-slate-800 rounded-2xl shadow-xl p-3 sm:p-5 border border-slate-700">
+        <h2 class="text-lg sm:text-xl font-bold text-alg-gold mb-3 sm:mb-4 flex items-center gap-2">
+            📋 <span data-i18n="calculationHistory">Calculation History</span>
+            <span id="historyCount" class="text-xs bg-alg-gold/20 text-alg-gold px-2 py-0.5 rounded-full"></span>
+        </h2>
+        <div class="history-info-banner" id="historyInfoBanner">
+            <span class="icon">⚠️</span>
+            <span data-i18n-html="historyLimitNote"><strong>Max 5</strong> calculations saved. Entries expire after <strong>24 hours</strong> automatically.</span>
+        </div>
+        <div id="historyList" class="space-y-2 sm:space-y-3"></div>
+    </div></div>
+
+<script>
+'use strict';
+
+/* ── i18n translations ────────────────────────────── */
+const translations = {
+    en: {
+        pageTitle: '🚗 Algerian Car Import Calculator',
+        mainTitle: 'Car Import Calculator',
+        subtitle: '🇩🇿 حاسبة استيراد السيارات للجزائر \u00A0|\u00A0 Accurate Landed Cost for Algeria',
+        totalLandedCost: 'Total Landed Cost',
+        centimes: 'centimes',
+        totalEUR: 'Total EUR',
+        carDetails: '🚗 Car Details',
+        carPrice: 'Car Price (EUR)',
+        shippingCost: 'Shipping Cost (EUR)',
+        exchangeRates: '💱 Exchange Rates',
+        officialRate: 'Official Rate (DZD/EUR)',
+        officialRateTip: 'Bank of Algeria official rate — used to calculate customs tax base only.',
+        parallelRate: 'Parallel Rate / Square (DZD/EUR)',
+        parallelRateTip: 'Real street/market rate (Square) — used to calculate the actual cost of buying euros.',
+        feesAndTaxes: '🏛️ Fees & Taxes',
+        customsTax: 'Customs Tax (%)',
+        customsTaxTip: 'Applied ONLY to the car price using the official rate. Shipping is excluded from the customs base.',
+        portFees: 'Port & Admin Fees (DZD)',
+        portFeesTip: 'Includes port handling, documentation, storage & admin processing fees at the port of entry.',
+        tvaDeduce: 'TVA Déductible (19%)',
+        tvaTip: 'Deduct 19% — For NIF-registered businesses only. Reduces car price before all calculations.',
+        tvaSavings: '✓ TVA savings:',
+        costBreakdown: 'Cost Breakdown',
+        component: 'Component',
+        amount: 'Amount (DZD)',
+        rate: 'Rate',
+        carCost: '🚗 Car Cost',
+        vatBadge: '−19% TVA',
+        shippingLabel: '🚢 Shipping Cost',
+        customsLabel: '🏛️ Customs Tax',
+        customsDetail: '(% on car price only)',
+        portLabel: '⚓ Port & Admin Fees',
+        total: 'TOTAL',
+        parallel: 'Parallel',
+        official: 'Official',
+        fixed: 'Fixed',
+        infoBox: 'ℹ️ How it works:',
+        infoText: 'Car purchase & shipping are converted at the parallel rate (what you actually pay). Customs tax is calculated only on the car price using the official rate (government valuation). Shipping is excluded from the customs base.',
+        footer: '🇩🇿 Made for Algerian car importers \u00A0|\u00A0 Exchange rates fluctuate — always verify before purchasing',
+        saveCalculation: 'Save Calculation',
+        enterCarName: 'Enter Car Name/Model',
+        cancelBtn: 'Cancel',
+        saveBtn: 'Save',
+        calculationHistory: 'Calculation History',
+        historyLimitNote: '<strong>Max 5</strong> calculations saved. Entries expire after <strong>24 hours</strong> automatically.',
+        delete: 'Delete',
+        details: 'Details',
+        introTitle: 'Professional Car Import Cost Calculator',
+        introDesc: 'Advanced calculation engine designed for Algerian automotive importers. Accurately processes dual exchange rate systems, customs regulations, and VAT deductions with precision.',
+        developedBy: 'Developed By',
+        trustBadge: 'Trusted by Import Professionals',
+        footerAboutTitle: 'About',
+        footerAboutText: 'Professional-grade import cost calculator engineered for accuracy and ease of use. Handles Algeria\'s complex dual exchange rate system with precision.',
+        footerFeaturesTitle: 'Key Features',
+        footerFeature1: 'Dual Exchange Rate Logic',
+        footerFeature2: 'Real-time Calculations',
+        footerFeature3: 'Mobile Optimized',
+        footerFeature4: 'Calculation History',
+        footerDeveloperTitle: 'Developer',
+        footerDeveloperRole: 'Full-Stack Developer',
+        footerDeveloperDesc: 'Specialized in financial calculators and enterprise web applications.',
+        footerSecure: 'Secure & Private — All calculations performed locally',
+        footerUpdated: 'Updated: February 2026',
+        footerDisclaimerTitle: 'Important Notice',
+        footerDisclaimer: 'Exchange rates fluctuate daily. Always verify current rates with official sources before making purchase decisions. This calculator provides estimates and should not be considered financial advice.',
+        footerCopyright: 'Made with precision for Algerian car importers',
+        footerRights: 'All rights reserved'
+    },
+    fr: {
+        pageTitle: '🚗 Calculatrice d\'Importation de Voitures en Algérie',
+        mainTitle: 'Calc. Importation Voiture',
+        subtitle: '🇩🇿 حاسبة استيراد السيارات للجزائر \u00A0|\u00A0 Coût d\'arrivée précis pour l\'Algérie',
+        totalLandedCost: 'Coût Total Rendu',
+        centimes: 'centimes',
+        totalEUR: 'Total EUR',
+        carDetails: '🚗 Détails Voiture',
+        carPrice: 'Prix Voiture (EUR)',
+        shippingCost: 'Frais Livraison (EUR)',
+        exchangeRates: '💱 Taux de Change',
+        officialRate: 'Taux Officiel (DZD/EUR)',
+        officialRateTip: 'Taux officiel de la Banque d\'Algérie — utilisé pour calculer uniquement la base de la taxe douanière.',
+        parallelRate: 'Taux Parallèle / Square (DZD/EUR)',
+        parallelRateTip: 'Taux réel du marché (Square) — utilisé pour calculer le coût réel d\'achat d\'euros.',
+        feesAndTaxes: '🏛️ Frais & Taxes',
+        customsTax: 'Taxe Douanière (%)',
+        customsTaxTip: 'Appliquée UNIQUEMENT au prix de la voiture au taux officiel. Livraison exclue de la base douanière.',
+        portFees: 'Frais Port & Admin (DZD)',
+        portFeesTip: 'Inclut manutention au port, documentation, stockage & frais administratifs au port d\'entrée.',
+        tvaDeduce: 'TVA Déductible (19%)',
+        tvaTip: 'Déduire 19% — Réservé aux entreprises enregistrées au NIF. Réduit le prix de la voiture avant tous les calculs.',
+        tvaSavings: '✓ Économie TVA:',
+        costBreakdown: 'Ventilation des Coûts',
+        component: 'Composant',
+        amount: 'Montant (DZD)',
+        rate: 'Taux',
+        carCost: '🚗 Coût Voiture',
+        vatBadge: '−19% TVA',
+        shippingLabel: '🚢 Coût Livraison',
+        customsLabel: '🏛️ Taxe Douanière',
+        customsDetail: '(% prix voiture uniquement)',
+        portLabel: '⚓ Frais Port & Admin',
+        total: 'TOTAL',
+        parallel: 'Parallèle',
+        official: 'Officiel',
+        fixed: 'Fixe',
+        infoBox: 'ℹ️ Comment ça marche:',
+        infoText: 'L\'achat de voiture & livraison sont convertis au taux parallèle (ce que vous payez réellement). La taxe douanière est calculée uniquement sur le prix de la voiture au taux officiel (évaluation gouvernementale). Livraison exclue de la base douanière.',
+        footer: '🇩🇿 Fait pour les importateurs de voitures algériens \u00A0|\u00A0 Les taux de change fluctuent — vérifiez toujours avant d\'acheter',
+        saveCalculation: 'Enregistrer le Calcul',
+        enterCarName: 'Entrez le Nom/Modèle de la Voiture',
+        cancelBtn: 'Annuler',
+        saveBtn: 'Enregistrer',
+        calculationHistory: 'Historique des Calculs',
+        historyLimitNote: '<strong>Max 5</strong> calculs sauvegardés. Les entrées expirent après <strong>24 heures</strong> automatiquement.',
+        delete: 'Supprimer',
+        details: 'Détails',
+        introTitle: 'Calculateur Professionnel de Coûts d’Importation',
+        introDesc: 'Moteur de calcul avancé conçu pour les importateurs automobiles algériens. Traite avec précision les systèmes de taux de change doubles, les réglementations douanières et les déductions de TVA.',
+        developedBy: 'Développé Par',
+        trustBadge: 'Approuvé par les professionnels',
+        footerAboutTitle: 'À propos',
+        footerAboutText: 'Calculateur de coûts d’importation professionnel conçu pour la précision et la facilité d’utilisation. Gère le système complexe de double taux de change de l’Algérie avec précision.',
+        footerFeaturesTitle: 'Fonctionnalités clés',
+        footerFeature1: 'Logique de Double Taux de Change',
+        footerFeature2: 'Calculs en Temps Réel',
+        footerFeature3: 'Optimisé Mobile',
+        footerFeature4: 'Historique des Calculs',
+        footerDeveloperTitle: 'Développeur',
+        footerDeveloperRole: 'Développeur Full-Stack',
+        footerDeveloperDesc: 'Spécialisé dans les calculateurs financiers et les applications web d’entreprise.',
+        footerSecure: 'Sécurisé et Privé — Tous les calculs s’effectuent localement',
+        footerUpdated: 'Mis à jour : Février 2026',
+        footerDisclaimerTitle: 'Avis Important',
+        footerDisclaimer: 'Les taux de change fluctuent quotidiennement. Vérifiez toujours les taux actuels auprès de sources officielles avant de prendre des décisions d’achat. Cette calculatrice fournit des estimations et ne doit pas être considérée comme un conseil financier.',
+        footerCopyright: 'Fait avec précision pour les importateurs de voitures algériens',
+        footerRights: 'Tous droits réservés'
+    },
+    ar: {
+        pageTitle: '🚗 حاسبة استيراد السيارات للجزائر',
+        mainTitle: 'حاسبة الاستيراد',
+        subtitle: '🇩🇿 حاسبة استيراد السيارات للجزائر \u00A0|\u00A0 حساب التكلفة الدقيق للجزائر',
+        totalLandedCost: 'إجمالي التكلفة',
+        centimes: 'سنتيم',
+        totalEUR: 'الإجمالي EUR',
+        carDetails: '🚗 تفاصيل السيارة',
+        carPrice: 'سعر السيارة (يورو)',
+        shippingCost: 'رسوم الشحن (يورو)',
+        exchangeRates: '💱 أسعار الصرف',
+        officialRate: 'السعر الرسمي (دج/يورو)',
+        officialRateTip: 'سعر بنك الجزائر الرسمي — يُستخدم لحساب أساس الضريبة الجمركية فقط.',
+        parallelRate: 'السعر الموازي / السوق السوداء (دج/يورو)',
+        parallelRateTip: 'سعر السوق الحقيقي — يُستخدم لحساب التكلفة الفعلية لشراء اليورو.',
+        feesAndTaxes: '🏛️ الرسوم والضرائب',
+        customsTax: 'الضريبة الجمركية (%)',
+        customsTaxTip: 'تُطبق فقط على سعر السيارة بالسعر الرسمي. يتم استبعاد الشحن من أساس الضريبة الجمركية.',
+        portFees: 'رسوم الميناء والإدارة (دج)',
+        portFeesTip: 'تشمل المناولة بالميناء والتوثيق والتخزين والرسوم الإدارية عند ميناء الدخول.',
+        tvaDeduce: 'الضريبة على القيمة المضافة القابلة للخصم (19%)',
+        tvaTip: 'اخفض 19% — للشركات المسجلة برقم تعريفي فقط. يقلل سعر السيارة قبل جميع الحسابات.',
+        tvaSavings: '✓ توفير الضريبة:',
+        costBreakdown: 'تفصيل التكاليف',
+        component: 'المكون',
+        amount: 'المبلغ (دج)',
+        rate: 'السعر',
+        carCost: '🚗 تكلفة السيارة',
+        vatBadge: '−19% ضريبة',
+        shippingLabel: '🚢 تكلفة الشحن',
+        customsLabel: '🏛️ الضريبة الجمركية',
+        customsDetail: '(% على سعر السيارة فقط)',
+        portLabel: '⚓ رسوم الميناء والإدارة',
+        total: 'الإجمالي',
+        parallel: 'موازي',
+        official: 'رسمي',
+        fixed: 'ثابت',
+        infoBox: 'ℹ️ كيف يعمل:',
+        infoText: 'يتم تحويل شراء السيارة والشحن بالسعر الموازي (ما تدفعه فعليًا). يتم حساب الضريبة الجمركية فقط على سعر السيارة بالسعر الرسمي. يتم استبعاد الشحن من أساس الضريبة الجمركية.',
+        footer: '🇩🇿 مصنوع لمستوردي السيارات الجزائريين \u00A0|\u00A0 أسعار الصرف تتقلب — تحقق دائمًا قبل الشراء',
+        saveCalculation: 'حفظ الحساب',
+        enterCarName: 'أدخل اسم/طراز السيارة',
+        cancelBtn: 'إلغاء',
+        saveBtn: 'حفظ',
+        calculationHistory: 'سجل الحسابات',
+        historyLimitNote: '<strong>الحد الأقصى 5</strong> حسابات محفوظة. تنتهي الصلاحية بعد <strong>24 ساعة</strong> تلقائياً.',
+        delete: 'حذف',
+        details: 'التفاصيل',
+        introTitle: 'حاسبة تكلفة استيراد السيارات المحترفة',
+        introDesc: 'محرك حساب متقدم مصمم لمستوردي السيارات الجزائريين. يعالج بدقة أنظمة أسعار الصرف المزدوجة واللوائح الجمركية وخصومات الضريبة.',
+        developedBy: 'طوره',
+        trustBadge: 'موثوق به من قبل محترفي الاستيراد',
+        footerAboutTitle: 'نبذة',
+        footerAboutText: 'حاسبة تكلفة استيراد مهنية مصممة للدقة وسهولة الاستخدام. تتعامل مع نظام سعر الصرف المزدوج المعقد في الجزائر بدقة.',
+        footerFeaturesTitle: 'الميزات الرئيسية',
+        footerFeature1: 'منطق سعر صرف مزدوج',
+        footerFeature2: 'حسابات فورية',
+        footerFeature3: 'محسّن للهاتف',
+        footerFeature4: 'سجل الحسابات',
+        footerDeveloperTitle: 'المطور',
+        footerDeveloperRole: 'مطور Full-Stack',
+        footerDeveloperDesc: 'متخصص في الحاسبات المالية وتطبيقات الويب المؤسسية.',
+        footerSecure: 'آمن وخاص — جميع الحسابات تتم محلياً',
+        footerUpdated: 'محدّث: فبراير 2026',
+        footerDisclaimerTitle: 'ملاحظة مهمة',
+        footerDisclaimer: 'تتقلب أسعار الصرف يومياً. تحقق دائماً من الأسعار الحالية مع المصادر الرسمية قبل اتخاذ قرارات الشراء. توفر هذه الحاسبة تقديرات ولا ينبغي اعتبارها نصيحة مالية.',
+        footerCopyright: 'مصنوع بدقة لمستوردي السيارات الجزائريين',
+        footerRights: 'جميع الحقوق محفوظة'
+    },
+    es: {
+        pageTitle: '🚗 Calculadora de Importación de Automóviles de Argelia',
+        mainTitle: 'Calc. Importación Autos',
+        subtitle: '🇩🇿 حاسبة استيراد السيارات للجزائر \u00A0|\u00A0 Costo de entrega preciso para Argelia',
+        totalLandedCost: 'Costo Total Entregado',
+        centimes: 'céntimos',
+        totalEUR: 'Total EUR',
+        carDetails: '🚗 Detalles del Auto',
+        carPrice: 'Precio del Auto (EUR)',
+        shippingCost: 'Costo de Envío (EUR)',
+        exchangeRates: '💱 Tasas de Cambio',
+        officialRate: 'Tasa Oficial (DZD/EUR)',
+        officialRateTip: 'Tasa oficial del Banco de Argelia — se utiliza solo para calcular la base del arancel aduanal.',
+        parallelRate: 'Tasa Paralela / Mercado Negro (DZD/EUR)',
+        parallelRateTip: 'Tasa de mercado real — se utiliza para calcular el costo real de compra de euros.',
+        feesAndTaxes: '🏛️ Aranceles e Impuestos',
+        customsTax: 'Impuesto Aduanal (%)',
+        customsTaxTip: 'Se aplica SOLO al precio del auto utilizando la tasa oficial. El envío se excluye de la base aduanal.',
+        portFees: 'Aranceles Portuarios y Administrativos (DZD)',
+        portFeesTip: 'Incluye manipulación portuaria, documentación, almacenamiento y aranceles administrativos en el puerto de entrada.',
+        tvaDeduce: 'IVA Deducible (19%)',
+        tvaTip: 'Reducir 19% — Solo para empresas registradas con NIF. Reduce el precio del auto antes de todos los cálculos.',
+        tvaSavings: '✓ Ahorro de IVA:',
+        costBreakdown: 'Desglose de Costos',
+        component: 'Componente',
+        amount: 'Monto (DZD)',
+        rate: 'Tasa',
+        carCost: '🚗 Costo del Auto',
+        vatBadge: '−19% IVA',
+        shippingLabel: '🚢 Costo de Envío',
+        customsLabel: '🏛️ Impuesto Aduanal',
+        customsDetail: '(% solo en precio del auto)',
+        portLabel: '⚓ Aranceles Portuarios y Admin',
+        total: 'TOTAL',
+        parallel: 'Paralela',
+        official: 'Oficial',
+        fixed: 'Fijo',
+        infoBox: 'ℹ️ Cómo funciona:',
+        infoText: 'La compra de auto y envío se convierten a la tasa paralela (lo que realmente pagas). El impuesto aduanal se calcula solo sobre el precio del auto utilizando la tasa oficial (valoración gubernamental). El envío se excluye de la base aduanal.',
+        footer: '🇩🇿 Hecho para importadores de autos argelinos \u00A0|\u00A0 Las tasas de cambio fluctúan — verifica siempre antes de comprar',
+        saveCalculation: 'Guardar Cálculo',
+        enterCarName: 'Ingrese Nombre/Modelo del Auto',
+        cancelBtn: 'Cancelar',
+        saveBtn: 'Guardar',
+        calculationHistory: 'Historial de Cálculos',
+        historyLimitNote: '<strong>Máx. 5</strong> cálculos guardados. Las entradas caducan después de <strong>24 horas</strong> automáticamente.',
+        delete: 'Eliminar',
+        details: 'Detalles',
+        introTitle: 'Calculadora Profesional de Costos de Importación',
+        introDesc: 'Motor de cálculo avanzado diseñado para importadores de automóviles argelinos. Procesa con precisión sistemas de tipo de cambio dual, regulaciones aduaneras y deducciones de IVA.',
+        developedBy: 'Desarrollado Por',
+        trustBadge: 'Confiado por profesionales de la importación',
+        footerAboutTitle: 'Acerca de',
+        footerAboutText: 'Calculadora de costos de importación de grado profesional diseñada para precisión y facilidad de uso. Maneja el complejo sistema de tipo de cambio dual de Argelia con precisión.',
+        footerFeaturesTitle: 'Características Clave',
+        footerFeature1: 'Lógica de Tipo de Cambio Dual',
+        footerFeature2: 'Cálculos en Tiempo Real',
+        footerFeature3: 'Optimizado para Móvil',
+        footerFeature4: 'Historial de Cálculos',
+        footerDeveloperTitle: 'Desarrollador',
+        footerDeveloperRole: 'Desarrollador Full-Stack',
+        footerDeveloperDesc: 'Especializado en calculadoras financieras y aplicaciones web empresariales.',
+        footerSecure: 'Seguro y Privado — Todos los cálculos se realizan localmente',
+        footerUpdated: 'Actualizado: Febrero 2026',
+        footerDisclaimerTitle: 'Aviso Importante',
+        footerDisclaimer: 'Los tipos de cambio fluctúan diariamente. Siempre verifique las tasas actuales con fuentes oficiales antes de tomar decisiones de compra. Esta calculadora proporciona estimaciones y no debe considerarse como asesoramiento financiero.',
+        footerCopyright: 'Hecho con precisión para importadores de autos argelinos',
+        footerRights: 'Todos los derechos reservados'
+    }
+};
+
+let currentLang = localStorage.getItem('lang') || 'fr';
+
+function setLanguage(lang) {
+    currentLang = lang;
+    localStorage.setItem('lang', lang);
+    document.documentElement.lang = lang;
+    
+    // Handle RTL for Arabic
+    if (lang === 'ar') {
+        document.documentElement.dir = 'rtl';
+    } else {
+        document.documentElement.dir = 'ltr';
+    }
+    
+    updatePageTranslations();
+    
+    // Update active button
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+}
+
+function t(key) {
+    return translations[currentLang]?.[key] || translations['en'][key] || key;
+}
+
+function updatePageTranslations() {
+    // Page title
+    const titleEl = document.getElementById('pageTitle');
+    if (titleEl) titleEl.textContent = t('pageTitle');
+    document.title = t('pageTitle');
+    
+    // All elements with data-i18n attribute (skip customsDetail — handled below)
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (key === 'customsDetail') return; // preserve inner <span id="customsPct">
+        el.textContent = t(key);
+    });
+    
+    // All elements with data-i18n-html attribute (for HTML content)
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.getAttribute('data-i18n-html');
+        el.innerHTML = t(key);
+    });
+    
+    // Specific manual updates for better control
+    document.getElementById('mainTitle').textContent = t('mainTitle');
+    document.getElementById('subtitle').innerHTML = t('subtitle');
+    
+    // Update customs detail text while preserving customsPct span
+    const customsPctEl = document.getElementById('customsPct');
+    if (customsPctEl) {
+        const customsPct = document.getElementById('customsTax').value;
+        customsPctEl.textContent = customsPct;
+        // Update surrounding text in parent
+        document.querySelectorAll('[data-i18n="customsDetail"]').forEach(el => {
+            const span = el.querySelector('#customsPct');
+            if (span) {
+                el.innerHTML = `(<span id="customsPct">${customsPct}</span>% ${t('customsDetail').split('%')[1]}`;
+            }
+        });
+    }
+}
+
+/* ── helpers ─────────────────────────────────────── */
+const $ = id => document.getElementById(id);
+
+function fmt(n, dec = 0) {
+    return Number(n).toLocaleString('fr-DZ', {
+        minimumFractionDigits: dec,
+        maximumFractionDigits: dec
+    });
+}
+
+/* Step buttons — step by 10 (or 1 for % fields) */
+function step(id, dir) {
+    const el = $(id);
+    const s  = parseFloat(el.step) || 10;
+    const v  = parseFloat(el.value) || 0;
+    const min = parseFloat(el.min ?? '-Infinity');
+    el.value = Math.max(min, v + dir * s);
+    calculate();
+}
+
+/* Debounce */
+let _t;
+function deb(fn, ms = 120) { clearTimeout(_t); _t = setTimeout(fn, ms); }
+
+/* ── main calculation ────────────────────────────– */
+function calculate() {
+    const carPrice     = Math.max(0, parseFloat($('itemPrice').value)    || 0);
+    const shipping     = Math.max(0, parseFloat($('shippingCost').value) || 0);
+    const offRate      = Math.max(1, parseFloat($('officialRate').value)  || 153);
+    const parRate      = Math.max(1, parseFloat($('parallelRate').value)  || 280);
+    const taxPct       = Math.max(0, parseFloat($('customsTax').value)    || 0);
+    const portFees     = Math.max(0, parseFloat($('portFees').value)      || 0);
+    const vat          = $('vatDeductible').checked;
+
+    // STEP 1 — VAT deduction (if applicable)
+    const adjCar       = vat ? carPrice * 0.81 : carPrice;
+    const vatSaved     = vat ? carPrice * 0.19 : 0;
+
+    // STEP 2 — Purchase costs at PARALLEL rate
+    const carDZD       = adjCar   * parRate;
+    const shipDZD      = shipping * parRate;
+
+    // STEP 3 — Customs base = car price ONLY at OFFICIAL rate
+    const customsBase  = adjCar * offRate;
+
+    // STEP 4 — Customs tax
+    const taxDZD       = customsBase * (taxPct / 100);
+
+    // STEP 5 — Grand total
+    const total        = carDZD + shipDZD + taxDZD + portFees;
+
+    // ── millions centimes (1 centime = 1 000 000 DZD)
+    const centimes     = total;
+
+    /* ── update UI ──────────────────────────────── */
+
+    // Big result
+    $('totalDZD').textContent      = fmt(total) + ' DZD';
+    $('totalMillions').textContent = fmt(centimes, 0) + ' centimes';
+    $('totalEUR').textContent      = '€' + fmt(carPrice + shipping, 2);
+    $('rateGap').textContent       = `Parallel: ${fmt(parRate)} | Official: ${fmt(offRate)}`;
+
+    // Breakdown
+    $('itemCostDZD').textContent   = fmt(carDZD);
+    $('shippingCostDZD').textContent = fmt(shipDZD);
+    $('customsTaxDZD').textContent = fmt(taxDZD);
+    $('portFeesDZD').textContent   = fmt(portFees);
+    $('totalRow').textContent      = fmt(total);
+    const customsPctEl = $('customsPct');
+    if (customsPctEl) customsPctEl.textContent = taxPct;
+
+    // Rate labels in table
+    $('rateParallelLabel').textContent  = `Parallel (${fmt(parRate)})`;
+    $('rateParallelLabel2').textContent = `Parallel (${fmt(parRate)})`;
+    $('rateOfficialLabel').textContent  = `Official (${fmt(offRate)})`;
+
+    // VAT badge & savings
+    $('vatBadge').classList.toggle('hidden', !vat);
+    const savRow = $('vatSavingsRow');
+    if (vat) {
+        savRow.classList.remove('hidden');
+        savRow.textContent =
+            `✓ TVA savings: €${fmt(vatSaved, 2)} saved (${fmt(vatSaved * parRate)} DZD at parallel rate)`;
+    } else {
+        savRow.classList.add('hidden');
+    }
+
+    // Pulse animation on result card
+    const card = $('resultCard');
+    card.classList.remove('result-pulse');
+    void card.offsetWidth; // reflow
+    card.classList.add('result-pulse');
+}
+
+/* ── event listeners ─────────────────────────────── */
+['itemPrice','shippingCost','officialRate','parallelRate','customsTax','portFees']
+    .forEach(id => $(id).addEventListener('input', () => deb(calculate)));
+
+$('vatDeductible').addEventListener('change', calculate);
+
+/* ── Calculation History Management ────────────────────── */
+let calculationHistory = [];
+
+const STORAGE_KEY = 'calculationHistory';
+const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+
+// Expose for testing (const/let not on window in strict mode)
+window._getHistory = () => calculationHistory;
+window._setHistory = (h) => { calculationHistory = h; };
+window._STORAGE_KEY = STORAGE_KEY;
+window._TWENTY_FOUR_HOURS = TWENTY_FOUR_HOURS;
+
+function openSaveDialog() {
+    $('saveModal').classList.remove('hidden');
+    $('carNameInput').focus();
+    $('carNameInput').value = '';
+}
+
+function closeSaveDialog() {
+    $('saveModal').classList.add('hidden');
+}
+
+function saveCalculation() {
+    const carName = $('carNameInput').value.trim();
+    if (!carName) {
+        alert('Please enter a car name/model');
+        return;
+    }
+
+    const carPrice     = parseFloat($('itemPrice').value) || 0;
+    const shipping     = parseFloat($('shippingCost').value) || 0;
+    const offRate      = parseFloat($('officialRate').value) || 153;
+    const parRate      = parseFloat($('parallelRate').value) || 280;
+    const taxPct       = parseFloat($('customsTax').value) || 0;
+    const portFees     = parseFloat($('portFees').value) || 0;
+    const vat          = $('vatDeductible').checked;
+
+    // Recalculate for storage
+    const adjCar       = vat ? carPrice * 0.81 : carPrice;
+    const carDZD       = adjCar * parRate;
+    const shipDZD      = shipping * parRate;
+    const customsBase  = adjCar * offRate;
+    const taxDZD       = customsBase * (taxPct / 100);
+    const totalDZD     = carDZD + shipDZD + taxDZD + portFees;
+
+    const now = Date.now();
+    const entry = {
+        id: now,
+        carName: carName,
+        savedAt: now,  // Timestamp for 24-hour expiration check
+        timestamp: new Date().toLocaleString(currentLang === 'ar' ? 'ar-DZ' : currentLang === 'es' ? 'es-DZ' : currentLang === 'fr' ? 'fr-DZ' : 'en-DZ'),
+        totalDZD: totalDZD,
+        centimes: totalDZD,
+        totalEUR: carPrice + shipping,
+        inputs: {
+            carPrice, shipping, offRate, parRate, taxPct, portFees, vat
+        },
+        breakdown: {
+            carDZD, shipDZD, taxDZD, portFees, customsBase, adjCar
+        }
+    };
+
+    calculationHistory.unshift(entry); // Add to beginning (newest first)
+    
+    // Keep only 5 entries and remove entries older than 24 hours
+    calculationHistory = calculationHistory
+        .filter(entry => (now - entry.savedAt) < TWENTY_FOUR_HOURS)  // Remove entries older than 24 hours
+        .slice(0, 5);  // Keep only 5 most recent
+
+    // Store to localStorage with error handling
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(calculationHistory));
+        console.log('✓ Saved to localStorage:', calculationHistory.length, 'entries');
+    } catch (e) {
+        console.error('✗ Failed to save to localStorage:', e);
+        alert('Could not save history. Please check your browser storage settings.');
+        return;
+    }
+    
+    closeSaveDialog();
+    renderHistory();
+    
+    // Show brief success feedback on the main Save Calculation button
+    const mainSaveBtn = document.querySelector('[data-i18n="saveCalculation"]');
+    if (mainSaveBtn) {
+        const parent = mainSaveBtn.closest('button');
+        if (parent) {
+            parent.style.background = '#006233';
+            parent.style.color = '#fff';
+            const origHTML = parent.innerHTML;
+            parent.innerHTML = '✅ ' + t('saveBtn') + '!';
+            setTimeout(() => {
+                parent.innerHTML = origHTML;
+                parent.style.background = '';
+                parent.style.color = '';
+            }, 1500);
+        }
+    }
+}
+
+function deleteEntry(id) {
+    calculationHistory = calculationHistory.filter(entry => entry.id !== id);
+    try {
+        if (calculationHistory.length > 0) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(calculationHistory));
+        } else {
+            localStorage.removeItem(STORAGE_KEY);
+        }
+    } catch (e) {
+        console.error('✗ Failed to update localStorage:', e);
+    }
+    renderHistory();
+}
+
+function renderHistory() {
+    const historyPanel = $('historyPanel');
+    const historyList = $('historyList');
+    const historyCount = $('historyCount');
+
+    if (calculationHistory.length === 0) {
+        historyPanel.classList.add('hidden');
+        return;
+    }
+
+    historyPanel.classList.remove('hidden');
+    historyCount.textContent = calculationHistory.length;
+    historyList.innerHTML = '';
+
+    calculationHistory.forEach((entry, index) => {
+        const card = document.createElement('div');
+        card.className = 'history-card';
+        card.innerHTML = `
+            <div class="history-card-header">
+                <div onclick="toggleDetails(${entry.id})">
+                    <div class="history-card-title">${escapeHtml(entry.carName)}</div>
+                    <div class="history-card-date">${entry.timestamp}</div>
+                </div>
+                <button class="delete-btn" onclick="deleteEntry(${entry.id}); event.stopPropagation();" data-i18n="delete">Delete</button>
+            </div>
+            <div class="history-card-result">
+                <div class="result-item">
+                    <div class="result-label" data-i18n="amount">Amount (DZD)</div>
+                    <div class="result-value">${fmt(entry.totalDZD)}</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label" data-i18n="centimes">Centimes</div>
+                    <div class="result-value gold">${fmt(entry.centimes, 0)}</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label" data-i18n="totalEUR">Total EUR</div>
+                    <div class="result-value">€${fmt(entry.totalEUR, 2)}</div>
+                </div>
+            </div>
+            <button class="collapsible-toggle" id="toggle-${entry.id}" onclick="toggleDetails(${entry.id})" data-i18n="details">Details</button>
+            <div class="collapsible-content" id="content-${entry.id}">
+                <div class="detail-row">
+                    <span class="detail-label" data-i18n="carPrice">Car Price (EUR)</span>
+                    <span class="detail-value">€${fmt(entry.inputs.carPrice, 2)}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label" data-i18n="shippingCost">Shipping Cost (EUR)</span>
+                    <span class="detail-value">€${fmt(entry.inputs.shipping, 2)}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label" data-i18n="officialRate">Official Rate</span>
+                    <span class="detail-value">${fmt(entry.inputs.offRate)}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label" data-i18n="parallelRate">Parallel Rate</span>
+                    <span class="detail-value">${fmt(entry.inputs.parRate)}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label" data-i18n="customsTax">Customs Tax</span>
+                    <span class="detail-value">${entry.inputs.taxPct}%</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label" data-i18n="portFees">Port Fees</span>
+                    <span class="detail-value">${fmt(entry.inputs.portFees)}</span>
+                </div>
+                ${entry.inputs.vat ? `<div class="detail-row">
+                    <span class="detail-label" data-i18n="tvaDeduce">TVA Deductible</span>
+                    <span class="detail-value" style="color: #10b981;">✓ Yes (19%)</span>
+                </div>` : ''}
+            </div>
+        `;
+        historyList.appendChild(card);
+    });
+
+    // Re-apply translations to new elements
+    updatePageTranslations();
+}
+
+function toggleDetails(id) {
+    const content = $(`content-${id}`);
+    const toggle = $(`toggle-${id}`);
+    content.classList.toggle('show');
+    toggle.classList.toggle('active');
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function loadHistoryFromStorage() {
+    try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        console.log('📦 localStorage.getItem result:', stored ? 'Found data' : 'No data');
+        
+        if (stored) {
+            calculationHistory = JSON.parse(stored);
+            console.log('✓ Loaded from localStorage:', calculationHistory.length, 'entries');
+            
+            // Auto-clean entries older than 24 hours
+            const now = Date.now();
+            const beforeClean = calculationHistory.length;
+            calculationHistory = calculationHistory.filter(entry => {
+                const age = now - entry.savedAt;
+                const isValid = age < TWENTY_FOUR_HOURS;
+                if (!isValid) console.log('  - Removed expired entry:', entry.carName, `(age: ${Math.round(age/1000/60)} min)`);
+                return isValid;
+            });
+            
+            console.log(`🗑️  Cleaned: ${beforeClean} → ${calculationHistory.length} entries`);
+            
+            // Save cleaned history back
+            if (calculationHistory.length > 0) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(calculationHistory));
+                console.log('✓ Saved cleaned history back to localStorage');
+            } else {
+                localStorage.removeItem(STORAGE_KEY);
+                console.log('✓ Removed empty history from localStorage');
+            }
+            
+            renderHistory();
+        } else {
+            console.log('ℹ️  No history found in localStorage on first load');
+        }
+    } catch (e) {
+        console.error('✗ Error loading history:', e);
+        calculationHistory = [];
+    }
+}
+
+// Debug function - call from browser console: checkHistory()
+function checkHistory() {
+    console.clear();
+    console.log('%c📊 HISTORY DEBUG INFO', 'font-size: 16px;font-weight:bold;color:#006233');
+    console.log('%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'color:#006233');
+    
+    console.log('\n1. Browser localStorage:');
+    const stored = localStorage.getItem(STORAGE_KEY);
+    console.log('   Key:', STORAGE_KEY);
+    console.log('   Data exists:', !!stored);
+    if (stored) console.log('   Data size:', stored.length, 'bytes');
+    
+    console.log('\n2. Memory (calculationHistory array):');
+    console.log('   Entries:', calculationHistory.length);
+    if (calculationHistory.length > 0) {
+        console.table(calculationHistory.map(e => ({
+            'Car': e.carName,
+            'Total DZD': fmt(e.totalDZD),
+            'Centimes': fmt(e.centimes, 0),
+            'Saved': new Date(e.savedAt).toLocaleTimeString()
+        })));
+    }
+    
+    console.log('\n3. Full stored objects:');
+    console.log(calculationHistory);
+    
+    console.log('\n%c💡 TIP: Type clearHistory() to clear all history', 'color:#D4AF37;font-size:12px');
+}
+
+// Clear history function - call from console: clearHistory()
+function clearHistory() {
+    localStorage.removeItem(STORAGE_KEY);
+    calculationHistory = [];
+    renderHistory();
+    console.log('✓ History cleared');
+}
+
+// Initialize language and calculate on load
+document.addEventListener('DOMContentLoaded', () => {
+    // Set initial language (default: French)
+    const langToLoad = localStorage.getItem('lang') || 'fr';
+    setLanguage(langToLoad);
+    
+    // Set RTL for Arabic
+    if (langToLoad === 'ar') {
+        document.documentElement.dir = 'rtl';
+    }
+    
+    // Highlight active language button
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === langToLoad);
+    });
+    
+    // Run initial calculation
+    calculate();
+    
+    // Load calculation history
+    loadHistoryFromStorage();
+    
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeSaveDialog();
+    });
+    
+    // Enter key to save in car name input
+    $('carNameInput').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            console.log('⌨️  Enter key pressed - saving calculation');
+            saveCalculation();
+        }
+    });
+    
+    // Close modal when clicking outside
+    $('saveModal').addEventListener('click', (e) => {
+        if (e.target === $('saveModal')) closeSaveDialog();
+    });
+    
+    // Log startup info
+    console.log('%c🚀 App initialized', 'font-size:14px;font-weight:bold;color:#006233');
+    console.log('💾 Storage Key:', STORAGE_KEY);
+    console.log('ℹ️  Debug: Open console and type checkHistory() to inspect storage');
+    console.log('ℹ️  Debug: Type clearHistory() to clear all saved calculations');
+});
+
+</script>
+</body>
+</html>
