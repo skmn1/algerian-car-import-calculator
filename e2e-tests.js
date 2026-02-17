@@ -422,7 +422,13 @@ async function test_TranslationsComplete() {
     const translations = w.eval('translations');
     
     const keys = ['saveCalculation', 'enterCarName', 'cancelBtn', 'saveBtn',
-                  'calculationHistory', 'historyLimitNote', 'delete', 'details'];
+                  'calculationHistory', 'historyLimitNote', 'delete', 'details',
+                  'introTitle', 'introDesc', 'developedBy', 'trustBadge',
+                  'footerAboutTitle', 'footerAboutText', 'footerFeaturesTitle',
+                  'footerFeature1', 'footerFeature2', 'footerFeature3', 'footerFeature4',
+                  'footerDeveloperTitle', 'footerDeveloperRole', 'footerDeveloperDesc',
+                  'footerSecure', 'footerUpdated', 'footerDisclaimerTitle',
+                  'footerDisclaimer', 'footerCopyright', 'footerRights'];
     const langs = ['en', 'fr', 'ar', 'es'];
     
     for (const lang of langs) {
@@ -435,8 +441,43 @@ async function test_TranslationsComplete() {
     dom.window.close();
 }
 
+async function test_IntroAndFooterPresent() {
+    console.log('\n━━━ TEST 12: Intro & Footer Sections Present ━━━');
+    const dom = createDOM();
+    await wait(1000);
+    const doc = dom.window.document;
+    
+    // Check intro section
+    const introTitle = doc.getElementById('introTitle');
+    const introDesc = doc.getElementById('introDesc');
+    assert(introTitle !== null, 'Intro title element exists');
+    assert(introDesc !== null, 'Intro description element exists');
+    assert(introTitle.textContent.length > 0, 'Intro title has text');
+    assert(introDesc.textContent.length > 0, 'Intro description has text');
+    assert(introDesc.textContent.includes('Dr. Soulimane KAMNI') || 
+           doc.body.textContent.includes('Dr. Soulimane KAMNI'), 'Developer credit present');
+    
+    // Check footer sections
+    const footerAboutTitle = doc.querySelector('[data-i18n="footerAboutTitle"]');
+    const footerFeaturesTitle = doc.querySelector('[data-i18n="footerFeaturesTitle"]');
+    const footerDeveloperTitle = doc.querySelector('[data-i18n="footerDeveloperTitle"]');
+    const footerDisclaimer = doc.querySelector('[data-i18n="footerDisclaimer"]');
+    
+    assert(footerAboutTitle !== null, 'Footer About section exists');
+    assert(footerFeaturesTitle !== null, 'Footer Features section exists');
+    assert(footerDeveloperTitle !== null, 'Footer Developer section exists');
+    assert(footerDisclaimer !== null, 'Footer disclaimer exists');
+    
+    // Verify developer name appears in footer
+    const footerText = doc.querySelector('footer').textContent;
+    assert(footerText.includes('Dr. Soulimane KAMNI'), 'Developer name in footer');
+    assert(footerText.includes('2026'), 'Copyright year present');
+    
+    dom.window.close();
+}
+
 async function test_StorageKeyConsistency() {
-    console.log('\n━━━ TEST 12: No Hardcoded Storage Keys ━━━');
+    console.log('\n━━━ TEST 13: No Hardcoded Storage Keys ━━━');
     const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
     
     // Get the main app script (the last, largest <script> block)
@@ -458,7 +499,7 @@ async function test_StorageKeyConsistency() {
 }
 
 async function test_ClearHistory() {
-    console.log('\n━━━ TEST 13: clearHistory() Function ━━━');
+    console.log('\n━━━ TEST 14: clearHistory() Function ━━━');
     const dom = createDOM();
     await wait(1000);
     const w = dom.window;
@@ -499,6 +540,7 @@ async function runAll() {
         test_UIRendering,
         test_EscapeClosesModal,
         test_TranslationsComplete,
+        test_IntroAndFooterPresent,
         test_StorageKeyConsistency,
         test_ClearHistory
     ];

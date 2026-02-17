@@ -98,6 +98,8 @@ TOTAL                                        = 3,025,860 DZD
 - **Responsive design** — works on mobile, tablet, and desktop
 - **Zero dependencies** — one HTML file, runs offline
 - **Multilingual support** — English, French, Arabic, Spanish
+- **Professional intro section** — clean, minimalistic hero with app description and developer credit
+- **Enhanced footer** — 3-column layout with About, Key Features, Developer info, disclaimer, and copyright
 
 ---
 
@@ -193,6 +195,13 @@ cd algerian-car-import-calculator
 ## 📄 License
 
 MIT License — free to use, modify, and distribute.
+
+---
+
+## 👨‍💻 Author
+
+**Dr. Soulimane KAMNI** — Full-Stack Developer  
+Specialized in financial calculators and enterprise web applications.
 
 ---
 
