@@ -298,3 +298,12 @@ input[type=number] { -moz-appearance: textfield; }
     .detail-row { padding: 0.2rem 0; font-size: 0.7rem; }
     .history-info-banner { font-size: 0.65rem; padding: 0.5rem 0.65rem; }
 }
+
+/* ── RTL (Arabic) overrides ───────────────────────── */
+[dir="rtl"] .stepper-btns { right: auto; left: 4px; }
+[dir="rtl"] .stepper-wrap input { padding: 0.5rem 0.85rem 0.5rem 2.6rem; }
+[dir="rtl"] .tip .tipbox { left: auto; right: 50%; transform: translateX(50%); }
+[dir="rtl"] .history-info-banner { border-left: none; border-right: 3px solid #D4AF37; }
+[dir="rtl"] .detail-label { text-align: right; }
+[dir="rtl"] .detail-value { text-align: left; }
+[dir="rtl"] #goToTop { right: auto; left: 2rem; }
