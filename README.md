@@ -83,12 +83,18 @@ TOTAL                                        = 3,025,860 DZD
 - **Real-time calculation** — results update instantly as you type
 - **Dual exchange rate logic** — parallel rate for purchases, official rate for customs
 - **TVA toggle** — deduct 19% for NIF-registered businesses
+- **💾 Calculation History** — save your 5 most recent calculations with custom car names
+  - Each entry shows total cost, centimes, EUR amount
+  - Collapsible details panel with all input values
+  - Delete individual entries
+  - Auto-saves to browser — persists across sessions
 - **Car-specific defaults** — parallel rate 280, customs 20%, shipping €1,500
 - **Custom ▲▼ steppers** — all fields increment/decrement by 10 (no cent-level noise)
 - **Centimes display** — results shown in both DZD and millions centimes (local convention)
 - **Cost breakdown table** — itemized view of every cost component
 - **Responsive design** — works on mobile, tablet, and desktop
 - **Zero dependencies** — one HTML file, runs offline
+- **Multilingual support** — English, French, Arabic, Spanish
 
 ---
 

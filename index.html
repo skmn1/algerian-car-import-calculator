@@ -143,6 +143,130 @@
             .no-print { display: none !important; }
             body { background: #fff !important; color: #000 !important; }
         }
+
+        /* History Panel and Modal Styles */
+        .history-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid #334155;
+            border-radius: 1rem;
+            padding: 1.25rem;
+            transition: all 0.2s ease;
+        }
+        .history-card:hover {
+            border-color: #006233;
+            box-shadow: 0 4px 15px rgba(0, 98, 51, 0.15);
+        }
+        .history-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            user-select: none;
+        }
+        .history-card-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+        .history-card-date {
+            font-size: 0.875rem;
+            color: #94a3b8;
+            margin-top: 0.25rem;
+        }
+        .delete-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: background 0.2s ease;
+        }
+        .delete-btn:hover {
+            background: #dc2626;
+        }
+        .history-card-result {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .result-item {
+            flex: 1;
+            min-width: 200px;
+        }
+        .result-label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+        .result-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #006233;
+        }
+        .result-value.gold {
+            color: #D4AF37;
+        }
+        .collapsible-toggle {
+            width: 100%;
+            text-align: left;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #cbd5e1;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-top: 0.75rem;
+        }
+        .collapsible-toggle:hover {
+            background: #1e293b;
+            border-color: #475569;
+        }
+        .collapsible-toggle.active {
+            background: #006233;
+            border-color: #006233;
+            color: white;
+        }
+        .collapsible-content {
+            display: none;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-top: none;
+            padding: 1rem;
+            font-size: 0.875rem;
+            border-radius: 0 0 0.5rem 0.5rem;
+            margin-top: -1px;
+        }
+        .collapsible-content.show {
+            display: block;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #1e293b;
+            color: #cbd5e1;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        .detail-label {
+            color: #94a3b8;
+        }
+        .detail-value {
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+    
     </style>
 </head>
 <body class="bg-slate-950 text-gray-100 min-h-screen">
@@ -326,6 +450,11 @@
                 </div>
             </div>
 
+            <!-- Save Calculation Button -->
+            <button onclick="openSaveDialog()" class="w-full bg-alg-gold text-slate-900 font-semibold py-3 px-4 rounded-lg hover:bg-yellow-400 transition-all duration-200 flex items-center justify-center gap-2 no-print">
+                💾 <span data-i18n="saveCalculation">Save Calculation</span>
+            </button>
+
             <!-- Breakdown Table -->
             <div class="bg-slate-800 rounded-2xl shadow-xl p-4 sm:p-6 flex-1">
                 <h2 class="text-base font-bold text-alg-gold mb-4 flex items-center gap-2" data-i18n="costBreakdown">
@@ -393,7 +522,26 @@
     <footer class="mt-8 sm:mt-10 text-center text-gray-600 text-xs no-print" data-i18n="footer">
         🇩🇿 Made for Algerian car importers &nbsp;|&nbsp; Exchange rates fluctuate — always verify before purchasing
     </footer>
-</div>
+    <!-- Save Calculation Modal -->
+    <div id="saveModal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 no-print">
+        <div class="bg-slate-800 rounded-2xl p-6 sm:p-8 max-w-md w-full mx-4 border border-slate-700">
+            <h3 class="text-xl font-bold text-alg-gold mb-4" data-i18n="enterCarName">Enter Car Name/Model</h3>
+            <input type="text" id="carNameInput" placeholder="e.g., Toyota Corolla 2022" class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-gray-400 focus:border-alg-green focus:outline-none mb-4">
+            <div class="flex gap-3">
+                <button onclick="closeSaveDialog()" class="flex-1 bg-slate-700 text-white py-2 rounded-lg hover:bg-slate-600 transition-all" data-i18n="cancelBtn">Cancel</button>
+                <button onclick="saveCalculation()" class="flex-1 bg-alg-gold text-slate-900 font-semibold py-2 rounded-lg hover:bg-yellow-400 transition-all" data-i18n="saveBtn">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calculation History Panel -->
+    <div id="historyPanel" class="hidden mt-10 bg-slate-800 rounded-2xl shadow-xl p-4 sm:p-6 border border-slate-700">
+        <h2 class="text-2xl font-bold text-alg-gold mb-6 flex items-center gap-2">
+            📋 <span data-i18n="calculationHistory">Calculation History</span>
+            <span id="historyCount" class="text-sm bg-alg-gold/20 text-alg-gold px-3 py-1 rounded-full"></span>
+        </h2>
+        <div id="historyList" class="space-y-4"></div>
+    </div></div>
 
 <script>
 'use strict';
@@ -439,7 +587,14 @@ const translations = {
         fixed: 'Fixed',
         infoBox: 'ℹ️ How it works:',
         infoText: 'Car purchase & shipping are converted at the parallel rate (what you actually pay). Customs tax is calculated only on the car price using the official rate (government valuation). Shipping is excluded from the customs base.',
-        footer: '🇩🇿 Made for Algerian car importers \u00A0|\u00A0 Exchange rates fluctuate — always verify before purchasing'
+        footer: '🇩🇿 Made for Algerian car importers \u00A0|\u00A0 Exchange rates fluctuate — always verify before purchasing',
+        saveCalculation: 'Save Calculation',
+        enterCarName: 'Enter Car Name/Model',
+        cancelBtn: 'Cancel',
+        saveBtn: 'Save',
+        calculationHistory: 'Calculation History',
+        delete: 'Delete',
+        details: 'Details'
     },
     fr: {
         pageTitle: '🚗 Calculatrice d\'Importation de Voitures en Algérie',
@@ -480,7 +635,14 @@ const translations = {
         fixed: 'Fixe',
         infoBox: 'ℹ️ Comment ça marche:',
         infoText: 'L\'achat de voiture & livraison sont convertis au taux parallèle (ce que vous payez réellement). La taxe douanière est calculée uniquement sur le prix de la voiture au taux officiel (évaluation gouvernementale). Livraison exclue de la base douanière.',
-        footer: '🇩🇿 Fait pour les importateurs de voitures algériens \u00A0|\u00A0 Les taux de change fluctuent — vérifiez toujours avant d\'acheter'
+        footer: '🇩🇿 Fait pour les importateurs de voitures algériens \u00A0|\u00A0 Les taux de change fluctuent — vérifiez toujours avant d\'acheter',
+        saveCalculation: 'Enregistrer le Calcul',
+        enterCarName: 'Entrez le Nom/Modèle de la Voiture',
+        cancelBtn: 'Annuler',
+        saveBtn: 'Enregistrer',
+        calculationHistory: 'Historique des Calculs',
+        delete: 'Supprimer',
+        details: 'Détails'
     },
     ar: {
         pageTitle: '🚗 حاسبة استيراد السيارات للجزائر',
@@ -521,7 +683,14 @@ const translations = {
         fixed: 'ثابت',
         infoBox: 'ℹ️ كيف يعمل:',
         infoText: 'يتم تحويل شراء السيارة والشحن بالسعر الموازي (ما تدفعه فعليًا). يتم حساب الضريبة الجمركية فقط على سعر السيارة بالسعر الرسمي. يتم استبعاد الشحن من أساس الضريبة الجمركية.',
-        footer: '🇩🇿 مصنوع لمستوردي السيارات الجزائريين \u00A0|\u00A0 أسعار الصرف تتقلب — تحقق دائمًا قبل الشراء'
+        footer: '🇩🇿 مصنوع لمستوردي السيارات الجزائريين \u00A0|\u00A0 أسعار الصرف تتقلب — تحقق دائمًا قبل الشراء',
+        saveCalculation: 'حفظ الحساب',
+        enterCarName: 'أدخل اسم/طراز السيارة',
+        cancelBtn: 'إلغاء',
+        saveBtn: 'حفظ',
+        calculationHistory: 'سجل الحسابات',
+        delete: 'حذف',
+        details: 'التفاصيل'
     },
     es: {
         pageTitle: '🚗 Calculadora de Importación de Automóviles de Argelia',
@@ -562,7 +731,14 @@ const translations = {
         fixed: 'Fijo',
         infoBox: 'ℹ️ Cómo funciona:',
         infoText: 'La compra de auto y envío se convierten a la tasa paralela (lo que realmente pagas). El impuesto aduanal se calcula solo sobre el precio del auto utilizando la tasa oficial (valoración gubernamental). El envío se excluye de la base aduanal.',
-        footer: '🇩🇿 Hecho para importadores de autos argelinos \u00A0|\u00A0 Las tasas de cambio fluctúan — verifica siempre antes de comprar'
+        footer: '🇩🇿 Hecho para importadores de autos argelinos \u00A0|\u00A0 Las tasas de cambio fluctúan — verifica siempre antes de comprar',
+        saveCalculation: 'Guardar Cálculo',
+        enterCarName: 'Ingrese Nombre/Modelo del Auto',
+        cancelBtn: 'Cancelar',
+        saveBtn: 'Guardar',
+        calculationHistory: 'Historial de Cálculos',
+        delete: 'Eliminar',
+        details: 'Detalles'
     }
 };
 
@@ -721,6 +897,184 @@ function calculate() {
 
 $('vatDeductible').addEventListener('change', calculate);
 
+/* ── Calculation History Management ────────────────────── */
+let calculationHistory = [];
+
+function openSaveDialog() {
+    $('saveModal').classList.remove('hidden');
+    $('carNameInput').focus();
+    $('carNameInput').value = '';
+}
+
+function closeSaveDialog() {
+    $('saveModal').classList.add('hidden');
+}
+
+function saveCalculation() {
+    const carName = $('carNameInput').value.trim();
+    if (!carName) {
+        alert('Please enter a car name/model');
+        return;
+    }
+
+    const carPrice     = parseFloat($('itemPrice').value) || 0;
+    const shipping     = parseFloat($('shippingCost').value) || 0;
+    const offRate      = parseFloat($('officialRate').value) || 153;
+    const parRate      = parseFloat($('parallelRate').value) || 280;
+    const taxPct       = parseFloat($('customsTax').value) || 0;
+    const portFees     = parseFloat($('portFees').value) || 0;
+    const vat          = $('vatDeductible').checked;
+
+    // Recalculate for storage
+    const adjCar       = vat ? carPrice * 0.81 : carPrice;
+    const carDZD       = adjCar * parRate;
+    const shipDZD      = shipping * parRate;
+    const customsBase  = adjCar * offRate;
+    const taxDZD       = customsBase * (taxPct / 100);
+    const totalDZD     = carDZD + shipDZD + taxDZD + portFees;
+
+    const entry = {
+        id: Date.now(),
+        carName: carName,
+        timestamp: new Date().toLocaleString(currentLang === 'ar' ? 'ar-DZ' : currentLang === 'es' ? 'es-DZ' : currentLang === 'fr' ? 'fr-DZ' : 'en-DZ'),
+        totalDZD: totalDZD,
+        centimes: totalDZD,
+        totalEUR: carPrice + shipping,
+        inputs: {
+            carPrice, shipping, offRate, parRate, taxPct, portFees, vat
+        },
+        breakdown: {
+            carDZD, shipDZD, taxDZD, portFees, customsBase, adjCar
+        }
+    };
+
+    calculationHistory.unshift(entry); // Add to beginning (newest first)
+    if (calculationHistory.length > 5) {
+        calculationHistory.pop(); // Remove oldest if more than 5
+    }
+
+    localStorage.setItem('calculationHistory', JSON.stringify(calculationHistory));
+    closeSaveDialog();
+    renderHistory();
+    
+    // Show brief success message
+    const btn = event.target.closest('button');
+    const originalText = btn.textContent;
+    btn.textContent = '✓ ' + t('saveBtn');
+    setTimeout(() => {
+        btn.textContent = originalText;
+    }, 2000);
+}
+
+function deleteEntry(id) {
+    calculationHistory = calculationHistory.filter(entry => entry.id !== id);
+    localStorage.setItem('calculationHistory', JSON.stringify(calculationHistory));
+    renderHistory();
+}
+
+function renderHistory() {
+    const historyPanel = $('historyPanel');
+    const historyList = $('historyList');
+    const historyCount = $('historyCount');
+
+    if (calculationHistory.length === 0) {
+        historyPanel.classList.add('hidden');
+        return;
+    }
+
+    historyPanel.classList.remove('hidden');
+    historyCount.textContent = calculationHistory.length;
+    historyList.innerHTML = '';
+
+    calculationHistory.forEach((entry, index) => {
+        const card = document.createElement('div');
+        card.className = 'history-card';
+        card.innerHTML = `
+            <div class="history-card-header">
+                <div onclick="toggleDetails(${entry.id})">
+                    <div class="history-card-title">${escapeHtml(entry.carName)}</div>
+                    <div class="history-card-date">${entry.timestamp}</div>
+                </div>
+                <button class="delete-btn" onclick="deleteEntry(${entry.id}); event.stopPropagation();" data-i18n="delete">Delete</button>
+            </div>
+            <div class="history-card-result">
+                <div class="result-item">
+                    <div class="result-label" data-i18n="amount">Amount (DZD)</div>
+                    <div class="result-value">${fmt(entry.totalDZD)}</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label" data-i18n="centimes">Centimes</div>
+                    <div class="result-value gold">${fmt(entry.centimes, 0)}</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label" data-i18n="totalEUR">Total EUR</div>
+                    <div class="result-value">€${fmt(entry.totalEUR, 2)}</div>
+                </div>
+            </div>
+            <button class="collapsible-toggle" id="toggle-${entry.id}" onclick="toggleDetails(${entry.id})" data-i18n="details">Details</button>
+            <div class="collapsible-content" id="content-${entry.id}">
+                <div class="detail-row">
+                    <span class="detail-label" data-i18n="carPrice">Car Price (EUR)</span>
+                    <span class="detail-value">€${fmt(entry.inputs.carPrice, 2)}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label" data-i18n="shippingCost">Shipping Cost (EUR)</span>
+                    <span class="detail-value">€${fmt(entry.inputs.shipping, 2)}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label" data-i18n="officialRate">Official Rate</span>
+                    <span class="detail-value">${fmt(entry.inputs.offRate)}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label" data-i18n="parallelRate">Parallel Rate</span>
+                    <span class="detail-value">${fmt(entry.inputs.parRate)}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label" data-i18n="customsTax">Customs Tax</span>
+                    <span class="detail-value">${entry.inputs.taxPct}%</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label" data-i18n="portFees">Port Fees</span>
+                    <span class="detail-value">${fmt(entry.inputs.portFees)}</span>
+                </div>
+                ${entry.inputs.vat ? `<div class="detail-row">
+                    <span class="detail-label" data-i18n="tvaDeduce">TVA Deductible</span>
+                    <span class="detail-value" style="color: #10b981;">✓ Yes (19%)</span>
+                </div>` : ''}
+            </div>
+        `;
+        historyList.appendChild(card);
+    });
+
+    // Re-apply translations to new elements
+    updatePageTranslations();
+}
+
+function toggleDetails(id) {
+    const content = $(`content-${id}`);
+    const toggle = $(`toggle-${id}`);
+    content.classList.toggle('show');
+    toggle.classList.toggle('active');
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function loadHistoryFromStorage() {
+    const stored = localStorage.getItem('calculationHistory');
+    if (stored) {
+        try {
+            calculationHistory = JSON.parse(stored);
+            renderHistory();
+        } catch (e) {
+            console.error('Error loading history:', e);
+        }
+    }
+}
+
 // Initialize language and calculate on load
 document.addEventListener('DOMContentLoaded', () => {
     // Set initial language (default: French)
@@ -739,6 +1093,19 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Run initial calculation
     calculate();
+    
+    // Load calculation history
+    loadHistoryFromStorage();
+    
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeSaveDialog();
+    });
+    
+    // Close modal when clicking outside
+    $('saveModal').addEventListener('click', (e) => {
+        if (e.target === $('saveModal')) closeSaveDialog();
+    });
 });
 
 </script>
