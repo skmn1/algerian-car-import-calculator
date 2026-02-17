@@ -1,9 +1,23 @@
 <!DOCTYPE html>
-<html lang="en" id="htmlRoot">
+<html lang="fr" id="htmlRoot">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="pageTitle">🚗 Algerian Car Import Calculator</title>
+    
+    <!-- Open Graph Meta Tags for Social Media -->
+    <meta property="og:title" content="🚗 Algerian Car Import Calculator">
+    <meta property="og:description" content="Accurate car import cost calculator for Algeria. Handles official vs parallel exchange rates, customs taxes, and TVA deduction.">
+    <meta property="og:image" content="thumbnail.png">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="🚗 Algerian Car Import Calculator">
+    <meta name="twitter:description" content="Calculate total landed cost for importing cars to Algeria with dual exchange rates">
+    <meta name="twitter:image" content="thumbnail.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -142,8 +156,8 @@
             </div>
             <!-- Language Toggle -->
             <div class="flex items-center gap-1.5 bg-slate-700/40 rounded-lg p-1.5 backdrop-blur-sm border border-slate-700 flex-wrap">
-                <button id="langBtn-en" onclick="setLanguage('en')" class="lang-btn active px-2.5 py-1 text-xs font-medium rounded transition-all duration-200" data-lang="en">EN</button>
-                <button id="langBtn-fr" onclick="setLanguage('fr')" class="lang-btn px-2.5 py-1 text-xs font-medium rounded transition-all duration-200" data-lang="fr">FR</button>
+                <button id="langBtn-en" onclick="setLanguage('en')" class="lang-btn px-2.5 py-1 text-xs font-medium rounded transition-all duration-200" data-lang="en">EN</button>
+                <button id="langBtn-fr" onclick="setLanguage('fr')" class="lang-btn active px-2.5 py-1 text-xs font-medium rounded transition-all duration-200" data-lang="fr">FR</button>
                 <button id="langBtn-ar" onclick="setLanguage('ar')" class="lang-btn px-2.5 py-1 text-xs font-medium rounded transition-all duration-200" data-lang="ar">AR</button>
                 <button id="langBtn-es" onclick="setLanguage('es')" class="lang-btn px-2.5 py-1 text-xs font-medium rounded transition-all duration-200" data-lang="es">ES</button>
             </div>
@@ -539,7 +553,7 @@ const translations = {
     }
 };
 
-let currentLang = localStorage.getItem('lang') || 'en';
+let currentLang = localStorage.getItem('lang') || 'fr';
 
 function setLanguage(lang) {
     currentLang = lang;
@@ -696,8 +710,8 @@ $('vatDeductible').addEventListener('change', calculate);
 
 // Initialize language and calculate on load
 document.addEventListener('DOMContentLoaded', () => {
-    // Set initial language
-    const langToLoad = localStorage.getItem('lang') || 'en';
+    // Set initial language (default: French)
+    const langToLoad = localStorage.getItem('lang') || 'fr';
     setLanguage(langToLoad);
     
     // Set RTL for Arabic
