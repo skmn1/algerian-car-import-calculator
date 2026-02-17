@@ -141,9 +141,11 @@
                 </h1>
             </div>
             <!-- Language Toggle -->
-            <div class="flex items-center gap-2 bg-slate-700/40 rounded-lg p-1.5 backdrop-blur-sm border border-slate-700">
-                <button id="langBtn-en" onclick="setLanguage('en')" class="lang-btn active px-3 py-1.5 text-xs sm:text-sm font-medium rounded transition-all duration-200" data-lang="en">EN</button>
-                <button id="langBtn-fr" onclick="setLanguage('fr')" class="lang-btn px-3 py-1.5 text-xs sm:text-sm font-medium rounded transition-all duration-200" data-lang="fr">FR</button>
+            <div class="flex items-center gap-1.5 bg-slate-700/40 rounded-lg p-1.5 backdrop-blur-sm border border-slate-700 flex-wrap">
+                <button id="langBtn-en" onclick="setLanguage('en')" class="lang-btn active px-2.5 py-1 text-xs font-medium rounded transition-all duration-200" data-lang="en">EN</button>
+                <button id="langBtn-fr" onclick="setLanguage('fr')" class="lang-btn px-2.5 py-1 text-xs font-medium rounded transition-all duration-200" data-lang="fr">FR</button>
+                <button id="langBtn-ar" onclick="setLanguage('ar')" class="lang-btn px-2.5 py-1 text-xs font-medium rounded transition-all duration-200" data-lang="ar">AR</button>
+                <button id="langBtn-es" onclick="setLanguage('es')" class="lang-btn px-2.5 py-1 text-xs font-medium rounded transition-all duration-200" data-lang="es">ES</button>
             </div>
         </div>
         <p class="text-gray-400 text-xs sm:text-sm px-2" id="subtitle">🇩🇿 حاسبة استيراد السيارات للجزائر &nbsp;|&nbsp; Accurate Landed Cost for Algeria</p>
@@ -452,6 +454,88 @@ const translations = {
         infoBox: 'ℹ️ Comment ça marche:',
         infoText: 'L\'achat de voiture & livraison sont convertis au taux parallèle (ce que vous payez réellement). La taxe douanière est calculée uniquement sur le prix de la voiture au taux officiel (évaluation gouvernementale). Livraison exclue de la base douanière.',
         footer: '🇩🇿 Fait pour les importateurs de voitures algériens &nbsp;|&nbsp; Les taux de change fluctuent — vérifiez toujours avant d\'acheter'
+    },
+    ar: {
+        pageTitle: '🚗 حاسبة استيراد السيارات للجزائر',
+        mainTitle: 'حاسبة الاستيراد',
+        subtitle: '🇩🇿 حاسبة استيراد السيارات للجزائر &nbsp;|&nbsp; حساب التكلفة الدقيق للجزائر',
+        totalLandedCost: 'إجمالي التكلفة',
+        centimes: 'سنتيم',
+        totalEUR: 'الإجمالي EUR',
+        carDetails: '🚗 تفاصيل السيارة',
+        carPrice: 'سعر السيارة (يورو)',
+        shippingCost: 'رسوم الشحن (يورو)',
+        exchangeRates: '💱 أسعار الصرف',
+        officialRate: 'السعر الرسمي (دج/يورو)',
+        officialRateTip: 'سعر بنك الجزائر الرسمي — يُستخدم لحساب أساس الضريبة الجمركية فقط.',
+        parallelRate: 'السعر الموازي / السوق السوداء (دج/يورو)',
+        parallelRateTip: 'سعر السوق الحقيقي — يُستخدم لحساب التكلفة الفعلية لشراء اليورو.',
+        feesAndTaxes: '🏛️ الرسوم والضرائب',
+        customsTax: 'الضريبة الجمركية (%)',
+        customsTaxTip: 'تُطبق فقط على سعر السيارة بالسعر الرسمي. يتم استبعاد الشحن من أساس الضريبة الجمركية.',
+        portFees: 'رسوم الميناء والإدارة (دج)',
+        portFeesTip: 'تشمل المناولة بالميناء والتوثيق والتخزين والرسوم الإدارية عند ميناء الدخول.',
+        tvaDeduce: 'الضريبة على القيمة المضافة القابلة للخصم (19%)',
+        tvaTip: 'اخفض 19% — للشركات المسجلة برقم تعريفي فقط. يقلل سعر السيارة قبل جميع الحسابات.',
+        tvaSavings: '✓ توفير الضريبة:',
+        costBreakdown: 'تفصيل التكاليف',
+        component: 'المكون',
+        amount: 'المبلغ (دج)',
+        rate: 'السعر',
+        carCost: '🚗 تكلفة السيارة',
+        vatBadge: '−19% ضريبة',
+        shippingLabel: '🚢 تكلفة الشحن',
+        customsLabel: '🏛️ الضريبة الجمركية',
+        customsDetail: '(% على سعر السيارة فقط)',
+        portLabel: '⚓ رسوم الميناء والإدارة',
+        total: 'الإجمالي',
+        parallel: 'موازي',
+        official: 'رسمي',
+        fixed: 'ثابت',
+        infoBox: 'ℹ️ كيف يعمل:',
+        infoText: 'يتم تحويل شراء السيارة والشحن بالسعر الموازي (ما تدفعه فعليًا). يتم حساب الضريبة الجمركية فقط على سعر السيارة بالسعر الرسمي. يتم استبعاد الشحن من أساس الضريبة الجمركية.',
+        footer: '🇩🇿 مصنوع لمستوردي السيارات الجزائريين &nbsp;|&nbsp; أسعار الصرف تتقلب — تحقق دائمًا قبل الشراء'
+    },
+    es: {
+        pageTitle: '🚗 Calculadora de Importación de Automóviles de Argelia',
+        mainTitle: 'Calc. Importación Autos',
+        subtitle: '🇩🇿 حاسبة استيراد السيارات للجزائر &nbsp;|&nbsp; Costo de entrega preciso para Argelia',
+        totalLandedCost: 'Costo Total Entregado',
+        centimes: 'céntimos',
+        totalEUR: 'Total EUR',
+        carDetails: '🚗 Detalles del Auto',
+        carPrice: 'Precio del Auto (EUR)',
+        shippingCost: 'Costo de Envío (EUR)',
+        exchangeRates: '💱 Tasas de Cambio',
+        officialRate: 'Tasa Oficial (DZD/EUR)',
+        officialRateTip: 'Tasa oficial del Banco de Argelia — se utiliza solo para calcular la base del arancel aduanal.',
+        parallelRate: 'Tasa Paralela / Mercado Negro (DZD/EUR)',
+        parallelRateTip: 'Tasa de mercado real — se utiliza para calcular el costo real de compra de euros.',
+        feesAndTaxes: '🏛️ Aranceles e Impuestos',
+        customsTax: 'Impuesto Aduanal (%)',
+        customsTaxTip: 'Se aplica SOLO al precio del auto utilizando la tasa oficial. El envío se excluye de la base aduanal.',
+        portFees: 'Aranceles Portuarios y Administrativos (DZD)',
+        portFeesTip: 'Incluye manipulación portuaria, documentación, almacenamiento y aranceles administrativos en el puerto de entrada.',
+        tvaDeduce: 'IVA Deducible (19%)',
+        tvaTip: 'Reducir 19% — Solo para empresas registradas con NIF. Reduce el precio del auto antes de todos los cálculos.',
+        tvaSavings: '✓ Ahorro de IVA:',
+        costBreakdown: 'Desglose de Costos',
+        component: 'Componente',
+        amount: 'Monto (DZD)',
+        rate: 'Tasa',
+        carCost: '🚗 Costo del Auto',
+        vatBadge: '−19% IVA',
+        shippingLabel: '🚢 Costo de Envío',
+        customsLabel: '🏛️ Impuesto Aduanal',
+        customsDetail: '(% solo en precio del auto)',
+        portLabel: '⚓ Aranceles Portuarios y Admin',
+        total: 'TOTAL',
+        parallel: 'Paralela',
+        official: 'Oficial',
+        fixed: 'Fijo',
+        infoBox: 'ℹ️ Cómo funciona:',
+        infoText: 'La compra de auto y envío se convierten a la tasa paralela (lo que realmente pagas). El impuesto aduanal se calcula solo sobre el precio del auto utilizando la tasa oficial (valoración gubernamental). El envío se excluye de la base aduanal.',
+        footer: '🇩🇿 Hecho para importadores de autos argelinos &nbsp;|&nbsp; Las tasas de cambio fluctúan — verifica siempre antes de comprar'
     }
 };
 
@@ -461,6 +545,14 @@ function setLanguage(lang) {
     currentLang = lang;
     localStorage.setItem('lang', lang);
     document.documentElement.lang = lang;
+    
+    // Handle RTL for Arabic
+    if (lang === 'ar') {
+        document.documentElement.dir = 'rtl';
+    } else {
+        document.documentElement.dir = 'ltr';
+    }
+    
     updatePageTranslations();
     
     // Update active button
@@ -607,6 +699,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Set initial language
     const langToLoad = localStorage.getItem('lang') || 'en';
     setLanguage(langToLoad);
+    
+    // Set RTL for Arabic
+    if (langToLoad === 'ar') {
+        document.documentElement.dir = 'rtl';
+    }
     
     // Highlight active language button
     document.querySelectorAll('.lang-btn').forEach(btn => {
