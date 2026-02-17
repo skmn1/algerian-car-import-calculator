@@ -633,7 +633,7 @@ async function test_CurrencyRatesSection() {
     assert(tbody !== null, 'Currency table body exists');
 
     const rows = tbody.querySelectorAll('tr');
-    assertEqual(rows.length, 4, 'Currency table has 4 rows (USD, EUR, CAD, CNY)');
+    assertEqual(rows.length, 8, 'Currency table has 8 rows (EUR, USD, GBP, CAD, CHF, TRY, AED, CNY)');
 
     // Each row should have 3 cells
     rows.forEach((row, i) => {
@@ -645,12 +645,19 @@ async function test_CurrencyRatesSection() {
     const tableText = tbody.textContent;
     assert(tableText.includes('USD'), 'Table contains USD');
     assert(tableText.includes('EUR'), 'Table contains EUR');
+    assert(tableText.includes('GBP'), 'Table contains GBP');
     assert(tableText.includes('CAD'), 'Table contains CAD');
+    assert(tableText.includes('CHF'), 'Table contains CHF');
+    assert(tableText.includes('TRY'), 'Table contains TRY');
+    assert(tableText.includes('AED'), 'Table contains AED');
     assert(tableText.includes('CNY'), 'Table contains CNY');
+
+    // Verify spread percentages are shown
+    assert(tableText.includes('%'), 'Table shows spread percentages');
 
     // Verify CURRENCY_RATES global exists
     const rates = w.eval('CURRENCY_RATES');
-    assertEqual(rates.length, 4, 'CURRENCY_RATES has 4 entries');
+    assertEqual(rates.length, 8, 'CURRENCY_RATES has 8 entries');
     rates.forEach(r => {
         assert(r.official > 0, `${r.code} has official rate`);
         assert(r.parallel > 0, `${r.code} has parallel rate`);

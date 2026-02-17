@@ -33,15 +33,23 @@ function deb(fn, ms = 120) { clearTimeout(_t); _t = setTimeout(fn, ms); }
 
 /* ── Currency rates table renderer ───────────────── */
 function renderCurrencyTable() {
-    const tbody = $('currencyTableBody');
+    var tbody = $('currencyTableBody');
     if (!tbody) return;
     tbody.innerHTML = CURRENCY_RATES.map(function(r) {
+        var spread = ((r.parallel - r.official) / r.official * 100).toFixed(0);
         return '<tr>' +
-            '<td class="py-3 text-gray-300">' + r.flag + ' ' + r.code + ' <span class="text-xs text-gray-500">(' + r.name + ')</span></td>' +
-            '<td class="py-3 text-right font-semibold text-white">' + fmt(r.official, 2) + '</td>' +
-            '<td class="py-3 text-right font-semibold text-alg-gold">' + fmt(r.parallel, 2) + '</td>' +
+            '<td class="py-2.5 text-gray-300">' + r.flag + ' <span class="font-semibold">' + r.code + '</span> <span class="text-xs text-gray-500">(' + r.name + ')</span></td>' +
+            '<td class="py-2.5 text-right font-medium text-gray-300">' + fmt(r.official, 2) + '</td>' +
+            '<td class="py-2.5 text-right font-semibold text-alg-gold">' + fmt(r.parallel, 2) +
+                ' <span class="text-[10px] text-gray-500">(+' + spread + '%)</span></td>' +
             '</tr>';
     }).join('');
+
+    // Show last updated note if data available
+    var updateEl = $('ratesLastUpdated');
+    if (updateEl && typeof RATES_LAST_UPDATED !== 'undefined') {
+        updateEl.textContent = RATES_LAST_UPDATED;
+    }
 }
 
 /* ── Main calculation ────────────────────────────── */
