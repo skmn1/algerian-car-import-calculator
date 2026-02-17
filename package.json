@@ -1,0 +1,15 @@
+{
+  "name": "export-car-toalgeria",
+  "version": "1.0.0",
+  "description": "> A single-file, browser-ready web app that accurately calculates the **total landed cost** of importing a car into Algeria — accounting for the country's dual exchange rate system.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node e2e-tests.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jsdom": "^24.1.3"
+  }
+}

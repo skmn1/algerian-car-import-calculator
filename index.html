@@ -145,90 +145,126 @@
         }
 
         /* History Panel and Modal Styles */
+        .history-info-banner {
+            background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+            border: 1px solid #334155;
+            border-left: 3px solid #D4AF37;
+            border-radius: 0.5rem;
+            padding: 0.6rem 0.85rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            line-height: 1.4;
+        }
+        .history-info-banner span.icon {
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .history-info-banner strong {
+            color: #D4AF37;
+        }
         .history-card {
             background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             border: 1px solid #334155;
-            border-radius: 1rem;
-            padding: 1.25rem;
+            border-radius: 0.75rem;
+            padding: 0.85rem 1rem;
             transition: all 0.2s ease;
         }
         .history-card:hover {
             border-color: #006233;
-            box-shadow: 0 4px 15px rgba(0, 98, 51, 0.15);
+            box-shadow: 0 2px 10px rgba(0, 98, 51, 0.12);
         }
         .history-card-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 0.75rem;
+            align-items: center;
+            margin-bottom: 0.5rem;
             cursor: pointer;
             user-select: none;
+            gap: 0.5rem;
         }
         .history-card-title {
-            font-size: 1.125rem;
+            font-size: 0.95rem;
             font-weight: 700;
             color: #f1f5f9;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .history-card-date {
-            font-size: 0.875rem;
-            color: #94a3b8;
-            margin-top: 0.25rem;
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-top: 0.1rem;
         }
         .delete-btn {
-            background: #ef4444;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.3rem 0.6rem;
+            border-radius: 0.375rem;
             cursor: pointer;
-            font-size: 0.875rem;
-            font-weight: 500;
-            transition: background 0.2s ease;
+            font-size: 0.7rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
         .delete-btn:hover {
-            background: #dc2626;
+            background: #ef4444;
+            color: white;
         }
         .history-card-result {
             display: flex;
-            gap: 2rem;
-            margin-bottom: 0.75rem;
-            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: nowrap;
         }
         .result-item {
             flex: 1;
-            min-width: 200px;
+            min-width: 0;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 0.375rem;
+            padding: 0.35rem 0.5rem;
+            text-align: center;
         }
         .result-label {
-            font-size: 0.75rem;
-            color: #94a3b8;
+            font-size: 0.6rem;
+            color: #64748b;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.1rem;
         }
         .result-value {
-            font-size: 1.25rem;
+            font-size: 0.85rem;
             font-weight: 700;
             color: #006233;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .result-value.gold {
             color: #D4AF37;
         }
         .collapsible-toggle {
             width: 100%;
-            text-align: left;
-            background: #0f172a;
-            border: 1px solid #334155;
-            color: #cbd5e1;
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
+            text-align: center;
+            background: transparent;
+            border: 1px solid #1e293b;
+            color: #64748b;
+            padding: 0.35rem 0.75rem;
+            border-radius: 0.375rem;
             cursor: pointer;
-            font-size: 0.875rem;
+            font-size: 0.7rem;
             font-weight: 500;
             transition: all 0.2s ease;
-            margin-top: 0.75rem;
+            margin-top: 0.4rem;
         }
         .collapsible-toggle:hover {
             background: #1e293b;
+            color: #cbd5e1;
             border-color: #475569;
         }
         .collapsible-toggle.active {
@@ -239,11 +275,11 @@
         .collapsible-content {
             display: none;
             background: #0f172a;
-            border: 1px solid #334155;
+            border: 1px solid #1e293b;
             border-top: none;
-            padding: 1rem;
-            font-size: 0.875rem;
-            border-radius: 0 0 0.5rem 0.5rem;
+            padding: 0.6rem 0.75rem;
+            font-size: 0.75rem;
+            border-radius: 0 0 0.375rem 0.375rem;
             margin-top: -1px;
         }
         .collapsible-content.show {
@@ -252,19 +288,34 @@
         .detail-row {
             display: flex;
             justify-content: space-between;
-            padding: 0.5rem 0;
+            padding: 0.3rem 0;
             border-bottom: 1px solid #1e293b;
             color: #cbd5e1;
+            font-size: 0.75rem;
         }
         .detail-row:last-child {
             border-bottom: none;
         }
         .detail-label {
-            color: #94a3b8;
+            color: #64748b;
         }
         .detail-value {
             font-weight: 600;
             color: #f1f5f9;
+        }
+        /* Mobile compact overrides */
+        @media (max-width: 640px) {
+            .history-card { padding: 0.65rem 0.75rem; }
+            .history-card-title { font-size: 0.85rem; }
+            .result-value { font-size: 0.75rem; }
+            .result-label { font-size: 0.55rem; }
+            .result-item { padding: 0.25rem 0.35rem; }
+            .history-card-result { gap: 0.35rem; }
+            .delete-btn { padding: 0.25rem 0.5rem; font-size: 0.65rem; }
+            .collapsible-toggle { padding: 0.3rem; font-size: 0.65rem; }
+            .collapsible-content { padding: 0.5rem; font-size: 0.7rem; }
+            .detail-row { padding: 0.2rem 0; font-size: 0.7rem; }
+            .history-info-banner { font-size: 0.65rem; padding: 0.5rem 0.65rem; }
         }
     
     </style>
@@ -535,12 +586,16 @@
     </div>
 
     <!-- Calculation History Panel -->
-    <div id="historyPanel" class="hidden mt-10 bg-slate-800 rounded-2xl shadow-xl p-4 sm:p-6 border border-slate-700">
-        <h2 class="text-2xl font-bold text-alg-gold mb-6 flex items-center gap-2">
+    <div id="historyPanel" class="hidden mt-6 sm:mt-10 bg-slate-800 rounded-2xl shadow-xl p-3 sm:p-5 border border-slate-700">
+        <h2 class="text-lg sm:text-xl font-bold text-alg-gold mb-3 sm:mb-4 flex items-center gap-2">
             📋 <span data-i18n="calculationHistory">Calculation History</span>
-            <span id="historyCount" class="text-sm bg-alg-gold/20 text-alg-gold px-3 py-1 rounded-full"></span>
+            <span id="historyCount" class="text-xs bg-alg-gold/20 text-alg-gold px-2 py-0.5 rounded-full"></span>
         </h2>
-        <div id="historyList" class="space-y-4"></div>
+        <div class="history-info-banner" id="historyInfoBanner">
+            <span class="icon">⚠️</span>
+            <span data-i18n-html="historyLimitNote"><strong>Max 5</strong> calculations saved. Entries expire after <strong>24 hours</strong> automatically.</span>
+        </div>
+        <div id="historyList" class="space-y-2 sm:space-y-3"></div>
     </div></div>
 
 <script>
@@ -593,6 +648,7 @@ const translations = {
         cancelBtn: 'Cancel',
         saveBtn: 'Save',
         calculationHistory: 'Calculation History',
+        historyLimitNote: '<strong>Max 5</strong> calculations saved. Entries expire after <strong>24 hours</strong> automatically.',
         delete: 'Delete',
         details: 'Details'
     },
@@ -641,6 +697,7 @@ const translations = {
         cancelBtn: 'Annuler',
         saveBtn: 'Enregistrer',
         calculationHistory: 'Historique des Calculs',
+        historyLimitNote: '<strong>Max 5</strong> calculs sauvegardés. Les entrées expirent après <strong>24 heures</strong> automatiquement.',
         delete: 'Supprimer',
         details: 'Détails'
     },
@@ -689,6 +746,7 @@ const translations = {
         cancelBtn: 'إلغاء',
         saveBtn: 'حفظ',
         calculationHistory: 'سجل الحسابات',
+        historyLimitNote: '<strong>الحد الأقصى 5</strong> حسابات محفوظة. تنتهي الصلاحية بعد <strong>24 ساعة</strong> تلقائياً.',
         delete: 'حذف',
         details: 'التفاصيل'
     },
@@ -737,6 +795,7 @@ const translations = {
         cancelBtn: 'Cancelar',
         saveBtn: 'Guardar',
         calculationHistory: 'Historial de Cálculos',
+        historyLimitNote: '<strong>Máx. 5</strong> cálculos guardados. Las entradas caducan después de <strong>24 horas</strong> automáticamente.',
         delete: 'Eliminar',
         details: 'Detalles'
     }
@@ -774,9 +833,10 @@ function updatePageTranslations() {
     if (titleEl) titleEl.textContent = t('pageTitle');
     document.title = t('pageTitle');
     
-    // All elements with data-i18n attribute
+    // All elements with data-i18n attribute (skip customsDetail — handled below)
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
+        if (key === 'customsDetail') return; // preserve inner <span id="customsPct">
         el.textContent = t(key);
     });
     
@@ -790,10 +850,17 @@ function updatePageTranslations() {
     document.getElementById('mainTitle').textContent = t('mainTitle');
     document.getElementById('subtitle').innerHTML = t('subtitle');
     
-    if (document.getElementById('customsPct')) {
+    // Update customs detail text while preserving customsPct span
+    const customsPctEl = document.getElementById('customsPct');
+    if (customsPctEl) {
         const customsPct = document.getElementById('customsTax').value;
+        customsPctEl.textContent = customsPct;
+        // Update surrounding text in parent
         document.querySelectorAll('[data-i18n="customsDetail"]').forEach(el => {
-            el.textContent = `(${customsPct}% ${t('customsDetail').split('%')[1]}`;
+            const span = el.querySelector('#customsPct');
+            if (span) {
+                el.innerHTML = `(<span id="customsPct">${customsPct}</span>% ${t('customsDetail').split('%')[1]}`;
+            }
         });
     }
 }
@@ -866,7 +933,8 @@ function calculate() {
     $('customsTaxDZD').textContent = fmt(taxDZD);
     $('portFeesDZD').textContent   = fmt(portFees);
     $('totalRow').textContent      = fmt(total);
-    $('customsPct').textContent    = taxPct;
+    const customsPctEl = $('customsPct');
+    if (customsPctEl) customsPctEl.textContent = taxPct;
 
     // Rate labels in table
     $('rateParallelLabel').textContent  = `Parallel (${fmt(parRate)})`;
@@ -902,6 +970,12 @@ let calculationHistory = [];
 
 const STORAGE_KEY = 'calculationHistory';
 const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+
+// Expose for testing (const/let not on window in strict mode)
+window._getHistory = () => calculationHistory;
+window._setHistory = (h) => { calculationHistory = h; };
+window._STORAGE_KEY = STORAGE_KEY;
+window._TWENTY_FOUR_HOURS = TWENTY_FOUR_HOURS;
 
 function openSaveDialog() {
     $('saveModal').classList.remove('hidden');
@@ -973,18 +1047,35 @@ function saveCalculation() {
     closeSaveDialog();
     renderHistory();
     
-    // Show brief success message
-    const btn = event.target.closest('button');
-    const originalText = btn.textContent;
-    btn.textContent = '✓ ' + t('saveBtn');
-    setTimeout(() => {
-        btn.textContent = originalText;
-    }, 2000);
+    // Show brief success feedback on the main Save Calculation button
+    const mainSaveBtn = document.querySelector('[data-i18n="saveCalculation"]');
+    if (mainSaveBtn) {
+        const parent = mainSaveBtn.closest('button');
+        if (parent) {
+            parent.style.background = '#006233';
+            parent.style.color = '#fff';
+            const origHTML = parent.innerHTML;
+            parent.innerHTML = '✅ ' + t('saveBtn') + '!';
+            setTimeout(() => {
+                parent.innerHTML = origHTML;
+                parent.style.background = '';
+                parent.style.color = '';
+            }, 1500);
+        }
+    }
 }
 
 function deleteEntry(id) {
     calculationHistory = calculationHistory.filter(entry => entry.id !== id);
-    localStorage.setItem('calculationHistory', JSON.stringify(calculationHistory));
+    try {
+        if (calculationHistory.length > 0) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(calculationHistory));
+        } else {
+            localStorage.removeItem(STORAGE_KEY);
+        }
+    } catch (e) {
+        console.error('✗ Failed to update localStorage:', e);
+    }
     renderHistory();
 }
 
