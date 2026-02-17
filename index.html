@@ -74,12 +74,12 @@
 
     <!-- ═══ HERO DESCRIPTION (translatable) ═══ -->
     <section id="heroSection" class="snap-section mb-6" style="min-height:80px;">
-        <div class="bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 rounded-2xl shadow-2xl p-5 sm:p-8 border border-slate-600">
+        <div class="bg-slate-800/80 rounded-xl shadow-lg p-5 sm:p-8 border border-slate-700">
             <div class="max-w-4xl mx-auto">
                 <div class="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 mb-4">
                     <div class="flex-shrink-0">
-                        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-alg-green to-emerald-600 rounded-full flex items-center justify-center shadow-lg">
-                            <svg class="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 bg-alg-green/15 rounded-full flex items-center justify-center border border-alg-green/30">
+                            <svg class="w-6 h-6 sm:w-7 sm:h-7 text-alg-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                             </svg>
                         </div>
@@ -124,11 +124,11 @@
         <div class="grid lg:grid-cols-5 gap-4 sm:gap-6">
 
             <!-- LEFT: INPUTS -->
-            <div class="lg:col-span-2 bg-slate-800 rounded-2xl shadow-2xl p-4 sm:p-6 space-y-4 sm:space-y-6">
+            <div class="lg:col-span-2 bg-slate-800/80 rounded-xl shadow p-4 sm:p-6 space-y-4 sm:space-y-6 border border-slate-700">
 
                 <!-- Car Details -->
                 <div>
-                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3" data-i18n="carDetails">🚗 Car Details</h3>
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3" data-i18n="carDetails">Car Details</h3>
                     <label class="block text-sm font-medium mb-1" data-i18n="carPrice">Car Price (EUR)</label>
                     <div class="stepper-wrap">
                         <input type="number" id="itemPrice" value="10000" min="0" step="10">
@@ -145,7 +145,7 @@
 
                 <!-- Exchange Rates -->
                 <div>
-                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3" data-i18n="exchangeRates">💱 Exchange Rates</h3>
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3" data-i18n="exchangeRates">Exchange Rates</h3>
                     <label class="block text-sm font-medium mb-1">
                         <span data-i18n="officialRate">Official Rate (DZD/EUR)</span>
                         <span class="tip ml-1">
@@ -172,7 +172,7 @@
 
                 <!-- Fees & Taxes -->
                 <div>
-                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3" data-i18n="feesAndTaxes">🏛️ Fees & Taxes</h3>
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3" data-i18n="feesAndTaxes">Fees & Taxes</h3>
                     <label class="block text-sm font-medium mb-1">
                         <span data-i18n="customsTax">Customs Tax (%)</span>
                         <span class="tip ml-1">
@@ -218,7 +218,7 @@
             <div class="lg:col-span-3 flex flex-col gap-4 sm:gap-5">
 
                 <!-- Big Total Card -->
-                <div id="resultCard" class="bg-gradient-to-br from-alg-green via-emerald-800 to-slate-800 rounded-2xl shadow-2xl p-5 sm:p-7">
+                <div id="resultCard" class="bg-alg-green rounded-xl shadow-lg p-5 sm:p-7">
                     <p class="text-sm text-green-200/70 font-medium mb-3 uppercase tracking-widest" data-i18n="totalLandedCost">Total Landed Cost</p>
                     <div id="totalDZD" class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-1">0 DZD</div>
                     <div id="totalMillions" class="text-2xl sm:text-3xl font-bold text-alg-gold mt-2">0 centimes</div>
@@ -229,12 +229,12 @@
                 </div>
 
                 <!-- Save Button -->
-                <button onclick="openSaveDialog()" class="w-full bg-alg-gold text-slate-900 font-semibold py-3 px-4 rounded-lg hover:bg-yellow-400 transition-all duration-200 flex items-center justify-center gap-2 no-print">
-                    💾 <span data-i18n="saveCalculation">Save Calculation</span>
+                <button onclick="openSaveDialog()" class="w-full bg-alg-gold/90 text-slate-900 font-semibold py-2.5 px-4 rounded-lg hover:bg-alg-gold transition-colors duration-200 flex items-center justify-center gap-2 text-sm no-print">
+                    <span data-i18n="saveCalculation">Save Calculation</span>
                 </button>
 
                 <!-- Breakdown Table -->
-                <div class="bg-slate-800 rounded-2xl shadow-xl p-4 sm:p-6 flex-1">
+                <div class="bg-slate-800/80 rounded-xl shadow p-4 sm:p-6 flex-1 border border-slate-700">
                     <h2 class="text-base font-bold text-alg-gold mb-4 flex items-center gap-2" data-i18n="costBreakdown">Cost Breakdown</h2>
                     <table class="w-full text-sm">
                         <thead>
@@ -247,27 +247,27 @@
                         <tbody class="divide-y divide-slate-700/60">
                             <tr>
                                 <td class="py-3 text-gray-300">
-                                    <span data-i18n="carCost">🚗 Car Cost</span>
+                                    <span data-i18n="carCost">Car Cost</span>
                                     <span id="vatBadge" class="hidden ml-2 text-xs bg-green-800 text-green-300 px-1.5 py-0.5 rounded" data-i18n="vatBadge">−19% TVA</span>
                                 </td>
                                 <td class="py-3 text-right font-semibold text-white" id="itemCostDZD">—</td>
                                 <td class="py-3 text-right text-gray-500 text-xs hidden sm:table-cell" id="rateParallelLabel">Parallel</td>
                             </tr>
                             <tr>
-                                <td class="py-3 text-gray-300" data-i18n="shippingLabel">🚢 Shipping Cost</td>
+                                <td class="py-3 text-gray-300" data-i18n="shippingLabel">Shipping Cost</td>
                                 <td class="py-3 text-right font-semibold text-white" id="shippingCostDZD">—</td>
                                 <td class="py-3 text-right text-gray-500 text-xs hidden sm:table-cell" id="rateParallelLabel2">Parallel</td>
                             </tr>
                             <tr>
                                 <td class="py-3 text-gray-300">
-                                    <span data-i18n="customsLabel">🏛️ Customs Tax</span>
+                                    <span data-i18n="customsLabel">Customs Tax</span>
                                     <span class="text-xs text-gray-500 block" data-i18n="customsDetail">(<span id="customsPct">20</span>% on car price only)</span>
                                 </td>
                                 <td class="py-3 text-right font-semibold text-white" id="customsTaxDZD">—</td>
                                 <td class="py-3 text-right text-gray-500 text-xs hidden sm:table-cell" id="rateOfficialLabel">Official</td>
                             </tr>
                             <tr>
-                                <td class="py-3 text-gray-300" data-i18n="portLabel">⚓ Port & Admin Fees</td>
+                                <td class="py-3 text-gray-300" data-i18n="portLabel">Port & Admin Fees</td>
                                 <td class="py-3 text-right font-semibold text-white" id="portFeesDZD">—</td>
                                 <td class="py-3 text-right text-gray-500 text-xs hidden sm:table-cell" data-i18n="fixed">Fixed</td>
                             </tr>
@@ -283,8 +283,8 @@
                 </div>
 
                 <!-- Info note -->
-                <div class="bg-blue-950/50 border border-blue-700/30 rounded-xl px-3 sm:px-4 py-2 sm:py-3 text-xs text-blue-300 leading-relaxed">
-                    <strong data-i18n="infoBox">ℹ️ How it works:</strong>
+                <div class="bg-slate-800/60 border border-slate-700 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-xs text-gray-400 leading-relaxed">
+                    <strong data-i18n="infoBox">How it works:</strong>
                     <span data-i18n="infoText">Car purchase & shipping are converted at the parallel rate (what you actually pay). Customs tax is calculated only on the car price using the official rate (government valuation). Shipping is excluded from the customs base.</span>
                 </div>
             </div>
@@ -293,7 +293,7 @@
 
     <!-- ═══ CURRENCY RATES SECTION ═══ -->
     <section id="currencyRatesSection" class="snap-section mt-6 sm:mt-10">
-        <div class="bg-slate-800 rounded-2xl shadow-xl p-4 sm:p-6 border border-slate-700">
+        <div class="bg-slate-800/80 rounded-xl shadow p-4 sm:p-6 border border-slate-700">
             <h2 class="text-base font-bold text-alg-gold mb-2" data-i18n="currencyRatesTitle">Exchange Rate Reference</h2>
             <p class="text-xs text-gray-400 mb-4" data-i18n="currencyRatesDesc">Reference rates for the Algerian Dinar (DZD). Data is indicative — always verify with current sources.</p>
             <div class="overflow-x-auto">
@@ -314,9 +314,9 @@
     </section>
 
     <!-- ═══ HISTORY PANEL ═══ -->
-    <div id="historyPanel" class="hidden mt-6 sm:mt-10 bg-slate-800 rounded-2xl shadow-xl p-3 sm:p-5 border border-slate-700 snap-section">
+    <div id="historyPanel" class="hidden mt-6 sm:mt-10 bg-slate-800/80 rounded-xl shadow p-3 sm:p-5 border border-slate-700 snap-section">
         <h2 class="text-lg sm:text-xl font-bold text-alg-gold mb-3 sm:mb-4 flex items-center gap-2">
-            📋 <span data-i18n="calculationHistory">Calculation History</span>
+            <span data-i18n="calculationHistory">Calculation History</span>
             <span id="historyCount" class="text-xs bg-alg-gold/20 text-alg-gold px-2 py-0.5 rounded-full"></span>
         </h2>
         <div class="history-info-banner" id="historyInfoBanner">
@@ -327,8 +327,8 @@
     </div>
 
     <!-- ═══ FOOTER ═══ -->
-    <footer class="mt-10 sm:mt-12 bg-gradient-to-b from-slate-900 to-slate-950 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden no-print snap-section">
-        <div class="bg-gradient-to-r from-alg-green/20 via-transparent to-alg-gold/20 px-6 py-8 sm:px-8 sm:py-10">
+    <footer class="mt-10 sm:mt-12 bg-slate-900 rounded-xl shadow-lg border border-slate-700 overflow-hidden no-print snap-section">
+        <div class="px-6 py-8 sm:px-8 sm:py-10">
             <div class="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-8">
                 <!-- About -->
                 <div class="text-center sm:text-left">
@@ -361,8 +361,8 @@
                 <div class="text-center sm:text-left">
                     <h3 class="text-sm font-bold text-alg-gold uppercase tracking-wider mb-3" data-i18n="footerDeveloperTitle">Developer</h3>
                     <div class="flex items-center justify-center sm:justify-start gap-3 mb-3">
-                        <div class="w-12 h-12 bg-gradient-to-br from-alg-green to-emerald-600 rounded-full flex items-center justify-center shadow-lg">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        <div class="w-10 h-10 bg-alg-green/15 rounded-full flex items-center justify-center border border-alg-green/30">
+                            <svg class="w-5 h-5 text-alg-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                         </div>
                         <div>
                             <p class="text-sm font-bold text-white">Dr. Soulimane KAMNI</p>
