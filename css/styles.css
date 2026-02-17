@@ -122,7 +122,20 @@ input[type=number] { -moz-appearance: textfield; }
     pointer-events: none;
 }
 #goToTop.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
-#goToTop:hover { background: #008844; }
+#goToTop:hover { background: #008844; transform: scale(1.1); }
+
+/* ── Scroll progress bar ──────────────────────────── */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(90deg, #006233, #D4AF37);
+    z-index: 50;
+    transition: width 50ms linear;
+    pointer-events: none;
+}
 
 /* ── Scroll snap ──────────────────────────────────── */
 .snap-container { scroll-snap-type: y proximity; }

@@ -53,6 +53,16 @@ function initSmartScroll() {
     }, { passive: true });
 }
 
+/* ── Scroll progress indicator ────────────────────── */
+function initScrollProgress() {
+    var bar = $('scrollProgress');
+    if (!bar) return;
+    window.addEventListener('scroll', function() {
+        var h = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.width = h > 0 ? (window.scrollY / h * 100) + '%' : '0%';
+    }, { passive: true });
+}
+
 /* ── Bootstrap ───────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', function() {
     // Set initial language (default: French)
@@ -76,6 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialise scroll helpers
     initGoToTop();
     initSmartScroll();
+    initScrollProgress();
 
     // ── Input listeners ─────────────────────────
     ['itemPrice','shippingCost','officialRate','parallelRate','customsTax','portFees']
